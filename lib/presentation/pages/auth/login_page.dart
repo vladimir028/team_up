@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:team_up/styles/my_colors.dart';
 
 
 class LoginPage extends StatefulWidget {
