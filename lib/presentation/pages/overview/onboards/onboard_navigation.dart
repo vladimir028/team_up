@@ -14,6 +14,9 @@ class OnboardNavigation extends StatefulWidget {
 
 class _OnboardNavigationState extends State<OnboardNavigation> {
   final PageController _pageController = PageController();
+  static int firstPage = 1;
+  static int secondPage = 2;
+  static int thirdPage = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +31,19 @@ class _OnboardNavigationState extends State<OnboardNavigation> {
                 heading: Strings.firstOnBoardPageStrings.heading,
                 description: Strings.firstOnBoardPageStrings.description,
                 indexToStart: Strings.firstOnBoardPageStrings.indexToStart,
-                onTap: () => _navigateToNextPage(1),
+                onTap: () => _navigateToNextPage(firstPage),
               ),
               HomePageLayout(
                 heading: Strings.secondOnBoardPageStrings.heading,
                 description: Strings.secondOnBoardPageStrings.description,
                 indexToStart: Strings.secondOnBoardPageStrings.indexToStart,
-                onTap: () => _navigateToNextPage(2),
+                onTap: () => _navigateToNextPage(secondPage),
               ),
               HomePageLayout(
                 heading: Strings.thirdOnBoardPageStrings.heading,
                 description: Strings.thirdOnBoardPageStrings.description,
                 indexToStart: Strings.thirdOnBoardPageStrings.indexToStart,
-                onTap: () => print('Onboarding complete'),
+                onTap: () => _navigateToNextPage(thirdPage),
               ),
             ],
           ),
@@ -60,6 +63,10 @@ class _OnboardNavigationState extends State<OnboardNavigation> {
   }
 
   void _navigateToNextPage(int nextPage) {
+    if (nextPage == thirdPage) {
+      Navigator.pushNamed(context, "/login");
+      return;
+    }
     _pageController.animateToPage(
       nextPage,
       duration: const Duration(milliseconds: 300),
