@@ -10,6 +10,7 @@ class MyColors {
   static const light = Color(0xFFD9E1E1);
   static const gray = Color(0xFFD9E1E1);
   static const white = Color(0xFFD9E1E1);
+  static const whiteButtons = Color(0xFFFFFFFF);
 }
 
 class _PrimaryColors {
