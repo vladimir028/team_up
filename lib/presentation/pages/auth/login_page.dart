@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:team_up/service/auth_service.dart';
+import 'package:toastification/toastification.dart';
 
+import '../../../global/toast.dart';
 import '../../../styles/my_colors.dart';
 import '../../../styles/my_font_sizes.dart';
 import '../../widgets/input_field.dart';
@@ -15,6 +19,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  AuthService authService = AuthService();
 
   @override
   void dispose() {
@@ -66,16 +72,35 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: "Enter Password",
                 isPasswordField: true),
             const SizedBox(height: 30),
-            const NavigationRoutes(
+             NavigationRoutes(
               descriptionButton: "Login",
               routeButton: "/itineraries",
               descriptionRegular: "Don't have an account? ",
               descriptionBold: "Sign up",
               descriptionRoute: "/register",
+              onTap: _signIn,
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _signIn() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await authService.signInWithEmailAndPassword(email, password);
+
+    if (user != null && mounted) {
+      Toast toast = Toast(
+          ToastificationType.success,
+          "User logged in successfully!",
+          "Welcome!",
+          Icons.check,
+          MyColors.support.success);
+      toast.showToast();
+      Navigator.pushNamed(context, "/register");
+    }
   }
 }

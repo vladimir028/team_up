@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:team_up/service/auth_service.dart';
+import 'package:toastification/toastification.dart';
 
+import '../../../global/toast.dart';
 import '../../../styles/my_colors.dart';
 import '../../../styles/my_font_sizes.dart';
 import '../../widgets/input_field.dart';
@@ -15,7 +19,11 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+
+  AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +71,44 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: _passwordController,
                 hintText: "Enter Password",
                 isPasswordField: true),
+            const SizedBox(height: 20),
+            InputField(
+                controller: _confirmPasswordController,
+                hintText: "Confirm Password",
+                isPasswordField: true),
             const SizedBox(height: 30),
-            const NavigationRoutes(
+            NavigationRoutes(
               descriptionButton: "Sign Up",
               routeButton: "/login",
               descriptionRegular: "Already have an account? ",
               descriptionBold: "Login",
               descriptionRoute: "/login",
+              onTap: _signUp,
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _signUp() async {
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    User? user = await authService.signUpWithEmailAndPassword(
+        username, email, password, confirmPassword);
+
+    if (user != null && mounted) {
+      Toast toast = Toast(
+          ToastificationType.success,
+          "User created successfully!",
+          "You can now log in",
+          Icons.check,
+          MyColors.support.success);
+      toast.showToast();
+      Navigator.pushNamed(context, "/login");
+    }
   }
 }
