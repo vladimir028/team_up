@@ -5,12 +5,22 @@ class MyColors {
   static var secondary = _SecondaryColors();
   static var tertiary = _TertiaryColors();
   static var support = _SupportColors();
+  static var sport = _SportIconColors();
 
   static const dark = Color(0xFF25131A);
   static const light = Color(0xFFD9E1E1);
   static const gray = Color(0xFFD9E1E1);
   static const white = Color(0xFFD9E1E1);
   static const whiteButtons = Color(0xFFFFFFFF);
+}
+
+class _SportIconColors {
+  final orange = const Color(0xFFFF7549);
+  final black = const Color(0xFF000000);
+  final blue = const Color(0xFF3A73B9);
+  final red = const Color(0xFFFE3C00);
+  final green = const Color(0xFF798D21);
+  final brown = const Color(0xFFCB5B39);
 }
 
 class _PrimaryColors {

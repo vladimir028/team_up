@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:team_up/data/onboard/strings.dart';
+import 'package:team_up/data/onboard/onboard_data.dart';
 
 import '../../../../styles/my_colors.dart';
 import 'onboard_layout.dart';
@@ -28,21 +28,21 @@ class _OnboardNavigationState extends State<OnboardNavigation> {
             controller: _pageController,
             children: [
               HomePageLayout(
-                heading: Strings.firstOnBoardPageStrings.heading,
-                description: Strings.firstOnBoardPageStrings.description,
-                indexToStart: Strings.firstOnBoardPageStrings.indexToStart,
+                heading: OnboardData.firstOnBoardPageStrings.heading,
+                description: OnboardData.firstOnBoardPageStrings.description,
+                indexToStart: OnboardData.firstOnBoardPageStrings.indexToStart,
                 onTap: () => _navigateToNextPage(firstPage),
               ),
               HomePageLayout(
-                heading: Strings.secondOnBoardPageStrings.heading,
-                description: Strings.secondOnBoardPageStrings.description,
-                indexToStart: Strings.secondOnBoardPageStrings.indexToStart,
+                heading: OnboardData.secondOnBoardPageStrings.heading,
+                description: OnboardData.secondOnBoardPageStrings.description,
+                indexToStart: OnboardData.secondOnBoardPageStrings.indexToStart,
                 onTap: () => _navigateToNextPage(secondPage),
               ),
               HomePageLayout(
-                heading: Strings.thirdOnBoardPageStrings.heading,
-                description: Strings.thirdOnBoardPageStrings.description,
-                indexToStart: Strings.thirdOnBoardPageStrings.indexToStart,
+                heading: OnboardData.thirdOnBoardPageStrings.heading,
+                description: OnboardData.thirdOnBoardPageStrings.description,
+                indexToStart: OnboardData.thirdOnBoardPageStrings.indexToStart,
                 onTap: () => _navigateToNextPage(thirdPage),
               ),
             ],

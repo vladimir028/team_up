@@ -6,9 +6,7 @@ import 'package:team_up/firebase_options.dart';
 import 'package:team_up/presentation/pages/auth/login_page.dart';
 import 'package:team_up/presentation/pages/auth/register_page.dart';
 import 'package:team_up/presentation/pages/home_page.dart';
-import 'package:team_up/presentation/pages/overview/account/choose_photo.dart';
-import 'package:team_up/presentation/pages/overview/account/choose_sport.dart';
-import 'package:team_up/presentation/pages/overview/account/create_username.dart';
+import 'package:team_up/presentation/pages/overview/account/account_navigation.dart';
 import 'package:team_up/presentation/pages/overview/onboards/onboard_navigation.dart';
 import 'package:team_up/presentation/pages/sport_detail.dart';
 import 'package:toastification/toastification.dart';
@@ -52,9 +50,7 @@ class _MyAppState extends State<MyApp> {
           '/': (context) => const OnboardNavigation(),
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterPage(),
-          '/create_username': (context) => const CreateUsernamePage(),
-          '/choose_profile_picture': (context) => const ChoosePhotoPage(),
-          '/choose_favorite_sport': (context) => const ChooseSportPage(),
+          '/account_overview': (context) => const AccountNavigation(),
           '/home': (context) => const HomePage(),
           '/sport_detail': (context) => const SportDetailPage(),
         },

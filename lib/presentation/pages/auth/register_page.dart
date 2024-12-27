@@ -108,7 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
           Icons.check,
           MyColors.support.success);
       toast.showToast();
-      Navigator.pushNamed(context, "/login");
+      Navigator.pushNamed(context, "/account_overview");
     }
   }
 }
