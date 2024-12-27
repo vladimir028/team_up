@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -20,7 +17,6 @@ class _AccountNavigationState extends State<AccountNavigation> {
   static int firstPage = 1;
   static int secondPage = 2;
   static int thirdPage = 3;
-
 
   @override
   @override
@@ -57,7 +53,7 @@ class _AccountNavigationState extends State<AccountNavigation> {
                   onTap: () => _navigateToNextPage(secondPage),
                   header: AccountOverview.secondAccountPageWidget.header,
                   description:
-                  AccountOverview.secondAccountPageWidget.description,
+                      AccountOverview.secondAccountPageWidget.description,
                   content: AccountOverview.secondAccountPageWidget.getContent(),
                 ),
                 AccountPageLayout(
@@ -65,7 +61,7 @@ class _AccountNavigationState extends State<AccountNavigation> {
                   onTap: () => _navigateToNextPage(thirdPage),
                   header: AccountOverview.thirdAccountPageWidget.header,
                   description:
-                  AccountOverview.thirdAccountPageWidget.description,
+                      AccountOverview.thirdAccountPageWidget.description,
                   content: AccountOverview.thirdAccountPageWidget.getContent(),
                 ),
               ],
