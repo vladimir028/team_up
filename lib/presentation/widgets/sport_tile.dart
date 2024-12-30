@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/sport.dart';
+import '../../data/account/sport_selection/sport.dart';
 import '../../styles/my_colors.dart';
 import '../../styles/my_font_sizes.dart';
 

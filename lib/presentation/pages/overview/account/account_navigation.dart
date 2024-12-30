@@ -11,7 +11,7 @@ import 'package:toastification/toastification.dart';
 
 import '../../../../data/account/account_overview.dart';
 import '../../../../global/toast.dart';
-import '../../../../models/sport.dart';
+import '../../../../data/account/sport_selection/sport.dart';
 import '../../../../styles/my_colors.dart';
 import 'account_page_layout.dart';
 

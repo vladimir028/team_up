@@ -1,4 +1,4 @@
-import 'package:team_up/models/sport.dart';
+import 'package:team_up/data/account/sport_selection/sport.dart';
 
 import 'image.dart';
 

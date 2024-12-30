@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:team_up/models/custom_user.dart';
-import 'package:team_up/models/sport.dart';
+import 'package:team_up/data/account/sport_selection/sport.dart';
 import 'package:toastification/toastification.dart';
 
 import '../global/toast.dart';

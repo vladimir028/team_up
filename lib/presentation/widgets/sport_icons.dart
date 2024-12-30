@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:team_up/data/account/sport_selection/sport_selection.dart';
 import 'package:team_up/global/user_registration_details.dart';
-import 'package:team_up/models/sport.dart';
+import 'package:team_up/data/account/sport_selection/sport.dart';
 import 'package:team_up/presentation/widgets/sport_tile.dart';
 
 class SportIcons extends StatefulWidget {

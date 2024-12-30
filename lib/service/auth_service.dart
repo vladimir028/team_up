@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:team_up/models/custom_user.dart';
-import 'package:team_up/models/sport.dart';
+import 'package:team_up/data/account/sport_selection/sport.dart';
 import 'package:team_up/repository/auth_repository.dart';
 
 class AuthService {

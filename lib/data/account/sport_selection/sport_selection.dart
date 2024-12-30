@@ -1,7 +1,7 @@
 import 'package:team_up/data/account/sport_selection/sport_selection_icon_data.dart';
 import 'package:team_up/styles/my_colors.dart';
 
-import '../../../models/sport.dart';
+import 'sport.dart';
 
 
 class SportSelection {
