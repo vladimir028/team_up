@@ -35,7 +35,6 @@ class _AccountNavigationState extends State<AccountNavigation> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _email = UserStore.email ?? "";
     _password = UserStore.password ?? "";

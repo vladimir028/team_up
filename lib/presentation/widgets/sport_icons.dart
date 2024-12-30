@@ -29,7 +29,7 @@ class _SportIconsState extends State<SportIcons> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     _selectedSports = UserStore.favoriteSports ?? [];
   }
