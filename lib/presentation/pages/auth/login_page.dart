@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
           Icons.check,
           MyColors.support.success);
       toast.showToast();
-      Navigator.pushNamed(context, "/account_overview");
+      Navigator.pushNamed(context, "/home");
     }
   }
 }

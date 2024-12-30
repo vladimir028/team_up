@@ -1,5 +1,12 @@
+import 'dart:collection';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:team_up/models/custom_user.dart';
+import 'package:team_up/models/sport.dart';
 import 'package:toastification/toastification.dart';
 
 import '../global/toast.dart';
@@ -7,18 +14,10 @@ import '../styles/my_colors.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
-  Future<User?> signUpWithEmailAndPassword(String username, String email,
-      String password, String confirmPassword) async {
-    if (!passwordAndConfirmPasswordMatch(password, confirmPassword)) {
-      Toast toast = Toast(
-          ToastificationType.error,
-          "Invalid input",
-          "Password and Confirm Password do not match",
-          Icons.dangerous_outlined,
-          MyColors.support.error);
-      toast.showToast();
-    }
+  Future<User?> signUpWithEmailAndPassword(
+      String email, String password) async {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -115,5 +114,54 @@ class AuthRepository {
   bool passwordAndConfirmPasswordMatch(
       String password, String confirmPassword) {
     return password.compareTo(confirmPassword) == 0;
+  }
+
+  Future<CustomUser?> addAdditionalInfoForUser(String id, String username,
+      List<Sport> favSports, File selectedImage) async {
+    Map<String, int> sportMap = getSportMap(favSports);
+    String imageUrlFromFirebase =
+        await getPhotoAsStringFromFirebaseStorage(selectedImage);
+
+    CustomUser customUser = CustomUser(
+        id: id,
+        username: username,
+        profilePicture: imageUrlFromFirebase,
+        favoriteSportWithLevel: sportMap);
+
+    final createdUser = customUser.toJson();
+
+    try {
+      final collection = firebaseFirestore.collection("customUser");
+      String id = collection.doc().id;
+
+      await collection.doc(id).set(createdUser);
+      return customUser;
+    } catch (e) {
+      Toast toast = Toast(ToastificationType.error, "An error occurred",
+          e.toString(), Icons.dangerous_outlined, MyColors.support.error);
+      toast.showToast();
+    }
+
+    return null;
+  }
+
+  Future<String> getPhotoAsStringFromFirebaseStorage(File selectedImage) async {
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    Reference referenceDirImages = referenceRoot.child('profile_pictures');
+    Reference referenceImageToUpload =
+        referenceDirImages.child(selectedImage.path);
+
+    await referenceImageToUpload.putFile(selectedImage);
+    return await referenceImageToUpload.getDownloadURL();
+  }
+
+  Map<String, int> getSportMap(List<Sport> favSports) {
+    Map<String, int> tmp = HashMap();
+    int a = 5;
+    for (var sport in favSports) {
+      tmp.putIfAbsent(sport.name, () => a);
+    }
+
+    return tmp;
   }
 }

@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:team_up/global/user_registration_details.dart';
 import 'package:team_up/service/auth_service.dart';
 import 'package:toastification/toastification.dart';
 
@@ -21,7 +21,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
 
   AuthService authService = AuthService();
 
@@ -58,11 +57,6 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 30),
             InputField(
-                controller: _usernameController,
-                hintText: "Enter Username",
-                isPasswordField: false),
-            const SizedBox(height: 20),
-            InputField(
                 controller: _emailController,
                 hintText: "Enter email",
                 isPasswordField: false),
@@ -92,23 +86,41 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _signUp() async {
-    String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
-    User? user = await authService.signUpWithEmailAndPassword(
-        username, email, password, confirmPassword);
+    bool passwordsAreTheSame = arePasswordsSame(password, confirmPassword);
+    if (passwordsAreTheSame) {
+      setState(() {
+        UserStore.email = email;
+        UserStore.password = password;
+        UserStore.confirmPassword = confirmPassword;
+      });
 
-    if (user != null && mounted) {
       Toast toast = Toast(
           ToastificationType.success,
-          "User created successfully!",
-          "You can now log in",
-          Icons.check,
+          "Hang on!",
+          "Just add the following fields",
+          Icons.bookmarks_sharp,
           MyColors.support.success);
       toast.showToast();
       Navigator.pushNamed(context, "/account_overview");
     }
+  }
+
+  bool arePasswordsSame(String password, String confirmPassword) {
+    if (password.compareTo(confirmPassword) != 0) {
+      Toast toast = Toast(
+          ToastificationType.error,
+          "Invalid input",
+          "Password and Confirm Password do not match",
+          Icons.dangerous_outlined,
+          MyColors.support.error);
+      toast.showToast();
+      return false;
+    }
+
+    return true;
   }
 }

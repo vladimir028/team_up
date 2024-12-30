@@ -5,11 +5,11 @@ import '../../presentation/widgets/input_field.dart';
 class FirstAccountPageWidget {
   final String header = "Create Username!";
   final String description = "Username can be changed at any time";
-  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
 
   Widget getContent() {
     return InputField(
-        controller: emailController,
+        controller: usernameController,
         hintText: "Enter Username",
         isPasswordField: false);
   }

@@ -1,7 +1,17 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:team_up/global/image.dart';
+import 'package:team_up/global/user_registration_details.dart';
+import 'package:team_up/models/custom_user.dart';
+import 'package:team_up/service/auth_service.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../../data/account/account_overview.dart';
+import '../../../../global/toast.dart';
+import '../../../../models/sport.dart';
 import '../../../../styles/my_colors.dart';
 import 'account_page_layout.dart';
 
@@ -18,7 +28,19 @@ class _AccountNavigationState extends State<AccountNavigation> {
   static int secondPage = 2;
   static int thirdPage = 3;
 
+  String _email = "";
+  String _password = "";
+
+  final AuthService authService = AuthService();
+
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _email = UserStore.email ?? "";
+    _password = UserStore.password ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,15 +94,66 @@ class _AccountNavigationState extends State<AccountNavigation> {
     );
   }
 
-  void _navigateToNextPage(int nextPage) {
+  void _navigateToNextPage(int nextPage) async {
     if (nextPage == thirdPage) {
-      Navigator.pushNamed(context, "/home");
+      await _handleSignUp();
       return;
     }
+    _animateToNextPage(nextPage);
+  }
+
+  void _animateToNextPage(int nextPage) {
     _pageController.animateToPage(
       nextPage,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<void> _handleSignUp() async {
+    final String email = _email;
+    final String password = _password;
+
+    final String username =
+        AccountOverview.firstAccountPageWidget.usernameController.text;
+    final List<Sport> favSports = UserStore.favoriteSports!;
+    final File selectedImage = ImageStore.selectedImage!;
+
+    final User? user = await authService.signUpWithEmailAndPassword(
+      email,
+      password,
+    );
+
+    if (user == null) return;
+
+    final CustomUser? customUser = await authService.addAdditionalInfoForUser(
+      user.uid,
+      username,
+      favSports,
+      selectedImage,
+    );
+
+    if (customUser != null && mounted) {
+      showMessage();
+      resetStores();
+      Navigator.pushNamed(context, "/login");
+    }
+  }
+
+  void resetStores() {
+    UserStore.resetFields();
+    ImageStore.resetFields();
+    AccountOverview.firstAccountPageWidget.usernameController =
+        TextEditingController();
+  }
+
+  void showMessage() {
+    Toast toast = Toast(
+        ToastificationType.success,
+        "Account created successfully!",
+        "You can now log in!",
+        Icons.check,
+        MyColors.support.success);
+    toast.showToast();
   }
 }
