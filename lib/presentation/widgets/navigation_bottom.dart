@@ -37,6 +37,9 @@ class _NavigationBarBottomState extends State<NavigationBarBottom> {
       case 2:
         Navigator.pushNamed(context, '/sport_create');
         break;
+      case 3:
+        Navigator.pushNamed(context, '/sport_create');
+        break;
       default:
         break;
     }

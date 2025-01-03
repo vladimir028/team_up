@@ -241,7 +241,7 @@ class SportFormState extends State<SportForm> {
           ),
         ),
       ),
-      bottomNavigationBar: const NavigationBarBottom(currentPage: 2),
+      bottomNavigationBar: const NavigationBarBottom(currentPage: 3),
     );
   }
 
