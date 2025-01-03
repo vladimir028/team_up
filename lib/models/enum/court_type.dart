@@ -1,0 +1,1 @@
+enum CourtType {indoor, outdoor}

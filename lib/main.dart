@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:team_up/firebase_options.dart';
 import 'package:team_up/presentation/pages/auth/login_page.dart';
 import 'package:team_up/presentation/pages/auth/register_page.dart';
+import 'package:team_up/presentation/pages/create_sport_event_page.dart';
 import 'package:team_up/presentation/pages/home_page.dart';
 import 'package:team_up/presentation/pages/overview/account/account_navigation.dart';
 import 'package:team_up/presentation/pages/overview/onboards/onboard_navigation.dart';
@@ -52,6 +53,7 @@ class _MyAppState extends State<MyApp> {
           '/register': (context) => const RegisterPage(),
           '/account_overview': (context) => const AccountNavigation(),
           '/home': (context) => const HomePage(),
+          '/sport_create': (context) => const SportForm(),
           '/sport_detail': (context) => const SportDetailPage(),
         },
       ),

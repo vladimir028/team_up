@@ -4,6 +4,7 @@ class Sport {
   final String name;
   final IconData iconData;
   final Color iconColor;
+  final String imgUrl;
 
-  Sport(this.name, this.iconData, this.iconColor);
+  Sport(this.name, this.iconData, this.iconColor, this.imgUrl);
 }

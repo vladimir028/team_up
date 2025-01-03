@@ -7,13 +7,17 @@ class InputField extends StatefulWidget {
   final String? hintText;
   final bool? isPasswordField;
   final bool? isDateField;
+  final TextInputType? keyboardType;
+  final VoidCallback? onTap;
 
   const InputField(
       {super.key,
       this.controller,
       this.hintText,
       this.isPasswordField,
-      this.isDateField});
+      this.isDateField,
+      this.keyboardType,
+      this.onTap});
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -33,6 +37,8 @@ class _InputFieldState extends State<InputField> {
       controller: widget.controller,
       obscureText: widget.isPasswordField ?? false,
       readOnly: widget.isDateField ?? false,
+      keyboardType: widget.keyboardType,
+      onTap: widget.onTap,
     );
   }
 }
