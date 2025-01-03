@@ -23,4 +23,8 @@ class AuthService {
     return await _authRepository.addAdditionalInfoForUser(
         id, username, favSports, selectedImage);
   }
+
+  User getCurrentUser(){
+    return _authRepository.getCurrentUser();
+  }
 }
