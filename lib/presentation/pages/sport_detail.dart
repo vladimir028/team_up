@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:team_up/models/sport_event.dart';
+import 'package:team_up/service/sport_service.dart';
 
 import '../../styles/my_colors.dart';
 import '../../styles/my_font_sizes.dart';
@@ -15,6 +16,9 @@ class SportDetailPage extends StatefulWidget {
 class _SportDetailPageState extends State<SportDetailPage> {
   late SportEvent sportEvent;
   late GoogleMapController mapController;
+  final SportService sportService = SportService();
+  late int missingPlayers;
+  late int playersAsOfNow;
 
   final Set<Marker> _markers = {};
 
@@ -22,6 +26,9 @@ class _SportDetailPageState extends State<SportDetailPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     sportEvent = ModalRoute.of(context)?.settings.arguments as SportEvent;
+
+    missingPlayers = sportEvent.missingPlayers;
+    playersAsOfNow = sportEvent.totalPlayersAsOfNow;
 
     _markers.add(
       Marker(
@@ -132,11 +139,11 @@ class _SportDetailPageState extends State<SportDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Total Players: ${sportEvent.totalPlayersAsOfNow}',
+                        'Total Players: $playersAsOfNow',
                         style: const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                       Text(
-                        'Missing Players: ${sportEvent.missingPlayers}',
+                        'Missing Players: $missingPlayers',
                         style: TextStyle(fontSize: MyFontSizes.titleMedium, color: MyColors.support.error),
                       ),
                     ],
@@ -190,9 +197,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                  //  TODO: Implement logic for adding/subtracting number of players
-                  },
+                  onPressed: () => joinEvent(sportEvent),
                   child: const Text(
                     'Join Event',
                     style: TextStyle(fontSize: MyFontSizes.titleMedium, color: MyColors.white),
@@ -204,5 +209,16 @@ class _SportDetailPageState extends State<SportDetailPage> {
         ),
       ),
     );
+  }
+
+  void joinEvent(SportEvent sportEvent) async{
+    SportEvent? updatedSportEvent = await sportService.joinEvent(sportEvent, context);
+    if (updatedSportEvent != null) {
+      setState(() {
+        sportEvent = updatedSportEvent;
+        missingPlayers = updatedSportEvent.missingPlayers;
+        playersAsOfNow = updatedSportEvent.totalPlayersAsOfNow;
+      });
+    }
   }
 }

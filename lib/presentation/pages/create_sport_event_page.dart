@@ -44,7 +44,8 @@ class SportFormState extends State<SportForm> {
   SportService sportService = SportService();
   AuthService authService = AuthService();
 
-  void _pickTime(TextEditingController controller, TimeOfDay? scheduledTime, Function(TimeOfDay) updateScheduledTime) async {
+  void _pickTime(TextEditingController controller, TimeOfDay? scheduledTime,
+      Function(TimeOfDay) updateScheduledTime) async {
     TimeOfDay? selectedTime = await showTimePicker(
       context: context,
       initialTime: scheduledTime ?? TimeOfDay.now(),
@@ -53,7 +54,8 @@ class SportFormState extends State<SportForm> {
       final formattedTime = selectedTime.format(context);
       setState(() {
         controller.text = formattedTime;
-        updateScheduledTime(TimeOfDay(hour: selectedTime.hour, minute: selectedTime.minute));
+        updateScheduledTime(
+            TimeOfDay(hour: selectedTime.hour, minute: selectedTime.minute));
       });
     }
   }
@@ -131,7 +133,7 @@ class SportFormState extends State<SportForm> {
                         onTap: () => _pickTime(
                           _scheduledTimeStartController,
                           scheduledTimeStart,
-                              (newTime) {
+                          (newTime) {
                             setState(() {
                               scheduledTimeStart = newTime;
                             });
@@ -147,7 +149,7 @@ class SportFormState extends State<SportForm> {
                         onTap: () => _pickTime(
                           _scheduledTimeEndController,
                           scheduledTimeEnd,
-                              (newTime) {
+                          (newTime) {
                             setState(() {
                               scheduledTimeEnd = newTime;
                             });
@@ -246,24 +248,19 @@ class SportFormState extends State<SportForm> {
   }
 
   void addSportEvent() async {
-    final sport = SportEvent(
-      sportName: selectedSport.name,
-      sportImageUrl: selectedSport.imgUrl,
-      duration:
-          calculateMinutesDifference(scheduledTimeEnd, scheduledTimeStart),
-      pricePerHour: int.parse(_pricePerHourController.text),
-      totalPlayersAsOfNow: int.parse(_totalPlayersController.text),
-      missingPlayers: int.parse(_missingPlayersController.text),
-      userId: authService.getCurrentUser().uid,
-      location: GeoPoint(
-          double.parse(latController.text), double.parse(lngController.text)),
-      startingTime: scheduledTimeStart,
-      endingTime: scheduledTimeEnd,
-      selectedDate: selectedDate ?? DateTime.now(),
-      courtType: selectedCourtType,
-    );
-
-    SportEvent? savedSport = await sportService.addSport(sport, context);
+    SportEvent? savedSport = await sportService.addSport(
+        selectedSport.name,
+        selectedSport.imgUrl,
+        calculateMinutesDifference(scheduledTimeEnd, scheduledTimeStart),
+        _pricePerHourController.text,
+        _totalPlayersController.text,
+        _missingPlayersController.text,
+        authService.getCurrentUser().uid,
+        GeoPoint(double.parse(latController.text), double.parse(lngController.text)),
+        scheduledTimeStart,
+        scheduledTimeEnd,
+        selectedDate,
+        selectedCourtType);
     if (savedSport != null && mounted) {
       Toast toast = Toast(
           ToastificationType.success,
