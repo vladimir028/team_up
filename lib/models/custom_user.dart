@@ -18,7 +18,7 @@ class CustomUser {
         id: snapshot['id'],
         username: snapshot['username'],
         profilePicture: snapshot['profilePicture'],
-        favoriteSportWithLevel: snapshot['favoriteSportWithLevel']);
+        favoriteSportWithLevel: castExplicitly(snapshot['favoriteSportWithLevel']));
   }
 
   Map<String, dynamic> toJson() {
@@ -28,5 +28,15 @@ class CustomUser {
       "profilePicture": profilePicture,
       "favoriteSportWithLevel": favoriteSportWithLevel,
     };
+  }
+
+  static castExplicitly(snapshot) {
+    Map<String, int> favoriteSportWithLevel = {};
+    snapshot.forEach((key, value) {
+      if (value is int) {
+        favoriteSportWithLevel[key] = value;
+      }
+    });
+    return favoriteSportWithLevel;
   }
 }
