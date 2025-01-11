@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:team_up/data/account/sport_selection/sport.dart';
 import 'package:team_up/repository/sport_repository.dart';
 
 import '../models/sport_event.dart';
@@ -12,5 +13,13 @@ class SportService {
 
   Future<List<SportEvent>?>fetchSportEvents() async{
     return await sportRepository.fetchSportEvents();
+  }
+
+  Future<List<SportEvent>?> filterSportEvents(List<String> filteredSportEvents) async{
+    return await sportRepository.filterSportEvents(filteredSportEvents);
+  }
+
+  Future<List<Sport>?> getUserPreferredSports() async{
+    return await sportRepository.getUserPreferredSports();
   }
 }

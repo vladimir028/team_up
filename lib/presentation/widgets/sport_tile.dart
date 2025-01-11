@@ -25,30 +25,34 @@ class _SportTileState extends State<SportTile> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onToggle,
-      child: Container(
-        decoration: BoxDecoration(
-          color: widget.isSelected
-              ? MyColors.primary.pink200
-              : MyColors.primary.pink100,
-          borderRadius: BorderRadius.circular(12),
-          border: widget.isSelected
-              ? Border.all(color: MyColors.support.success, width: 3)
-              : null,
-        ),
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Icon(widget.sport.iconData, color: widget.sport.iconColor),
-              Text(
-                widget.sport.name,
-                style: const TextStyle(
-                  color: MyColors.dark,
-                  fontWeight: FontWeight.bold,
-                  fontSize: MyFontSizes.titleBase,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: widget.isSelected
+                ? MyColors.primary.pink200
+                : null,
+            borderRadius: BorderRadius.circular(12),
+            border: widget.isSelected
+                ? Border.all(color: MyColors.dark, width: 1)
+                : null,
+          ),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(widget.sport.iconData, color: widget.sport.iconColor),
+                const SizedBox(width: 10,),
+                Text(
+                  widget.sport.name,
+                  style: const TextStyle(
+                    color: MyColors.dark,
+                    fontWeight: FontWeight.bold,
+                    fontSize: MyFontSizes.titleBase,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
