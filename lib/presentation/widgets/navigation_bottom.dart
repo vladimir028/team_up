@@ -68,7 +68,7 @@ class _NavigationBarBottomState extends State<NavigationBarBottom> {
         ),
       ],
       currentIndex: _selectedIndex,
-      selectedItemColor: MyColors.gray,
+      selectedItemColor: MyColors.dark,
       onTap: _onItemTapped,
     );
   }
