@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:team_up/models/sport_event.dart';
+import 'package:team_up/service/sport_event_service.dart';
 import 'package:team_up/service/sport_service.dart';
 
 import '../../styles/my_colors.dart';
@@ -17,8 +18,11 @@ class _SportDetailPageState extends State<SportDetailPage> {
   late SportEvent sportEvent;
   late GoogleMapController mapController;
   final SportService sportService = SportService();
+  final SportEventService sportEventService = SportEventService();
   late int missingPlayers;
   late int playersAsOfNow;
+  String buttonText = "Join Event";
+  bool hasJoined = false;
 
   final Set<Marker> _markers = {};
 
@@ -33,10 +37,13 @@ class _SportDetailPageState extends State<SportDetailPage> {
     _markers.add(
       Marker(
         markerId: const MarkerId('event_location'),
-        position: LatLng(sportEvent.location.latitude, sportEvent.location.longitude),
+        position:
+            LatLng(sportEvent.location.latitude, sportEvent.location.longitude),
         infoWindow: InfoWindow(title: sportEvent.sportName),
       ),
     );
+
+    _checkIfUserHasJoined(sportEvent.id);
   }
 
   @override
@@ -59,22 +66,22 @@ class _SportDetailPageState extends State<SportDetailPage> {
                   left: 16,
                   child: IconButton(
                     icon: const Icon(Icons.arrow_back, color: MyColors.dark),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(context, true),
                   ),
                 ),
                 Positioned(
                   top: 40,
                   right: 16,
                   child: IconButton(
-                    icon: const Icon(Icons.favorite_border, color: MyColors.dark),
+                    icon:
+                        const Icon(Icons.favorite_border, color: MyColors.dark),
                     onPressed: () {
-                    //   TODO: Implement wishlist logic
+                      //   TODO: Implement wishlist logic
                     },
                   ),
                 ),
               ],
             ),
-
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -87,12 +94,16 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       Expanded(
                         child: Text(
                           sportEvent.sportName,
-                          style: const TextStyle(fontSize: MyFontSizes.titleLarge, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: MyFontSizes.titleLarge,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                       Text(
                         '${sportEvent.pricePerHour} ден/hr',
-                        style: TextStyle(fontSize: MyFontSizes.titleMedium, color: MyColors.primary.pink500),
+                        style: TextStyle(
+                            fontSize: MyFontSizes.titleMedium,
+                            color: MyColors.primary.pink500),
                       ),
                     ],
                   ),
@@ -104,7 +115,9 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       Expanded(
                         child: Text(
                           'Latitude: ${sportEvent.location.latitude}, Longitude: ${sportEvent.location.longitude}',
-                          style:  const TextStyle(fontSize: MyFontSizes.titleBase, color: MyColors.gray),
+                          style: const TextStyle(
+                              fontSize: MyFontSizes.titleBase,
+                              color: MyColors.gray),
                         ),
                       ),
                     ],
@@ -117,7 +130,8 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       const SizedBox(width: 8),
                       Text(
                         'Date: ${sportEvent.selectedDate.toLocal().toString().split(' ')[0]}',
-                        style: const TextStyle(fontSize: MyFontSizes.titleMedium),
+                        style:
+                            const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                     ],
                   ),
@@ -128,23 +142,25 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       const SizedBox(width: 8),
                       Text(
                         'Time: ${sportEvent.startingTime.format(context)} - ${sportEvent.endingTime.format(context)}',
-                        style: const TextStyle(fontSize: MyFontSizes.titleMedium),
+                        style:
+                            const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-
-                  // Players info
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Total Players: $playersAsOfNow',
-                        style: const TextStyle(fontSize: MyFontSizes.titleMedium),
+                        style:
+                            const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                       Text(
                         'Missing Players: $missingPlayers',
-                        style: TextStyle(fontSize: MyFontSizes.titleMedium, color: MyColors.support.error),
+                        style: TextStyle(
+                            fontSize: MyFontSizes.titleMedium,
+                            color: MyColors.support.error),
                       ),
                     ],
                   ),
@@ -157,7 +173,8 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       const SizedBox(width: 8),
                       Text(
                         'Court Type: ${sportEvent.courtType.toString().split('.').last}',
-                        style: const TextStyle(fontSize: MyFontSizes.titleMedium),
+                        style:
+                            const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                     ],
                   ),
@@ -165,14 +182,17 @@ class _SportDetailPageState extends State<SportDetailPage> {
 
                   const Text(
                     'Location',
-                    style: TextStyle(fontSize: MyFontSizes.titleMedium, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: MyFontSizes.titleMedium,
+                        fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   SizedBox(
                     height: 200,
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
-                        target: LatLng(sportEvent.location.latitude, sportEvent.location.longitude),
+                        target: LatLng(sportEvent.location.latitude,
+                            sportEvent.location.longitude),
                         zoom: 14,
                       ),
                       markers: _markers,
@@ -184,23 +204,24 @@ class _SportDetailPageState extends State<SportDetailPage> {
                 ],
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: MyColors.primary.pink500,
+                    backgroundColor: hasJoined
+                        ? MyColors.gray
+                        : MyColors.primary.pink500,
                     padding: const EdgeInsets.all(16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () => joinEvent(sportEvent),
-                  child: const Text(
-                    'Join Event',
-                    style: TextStyle(fontSize: MyFontSizes.titleMedium, color: MyColors.white),
+                  onPressed: hasJoined ? null : () => joinEvent(sportEvent),
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(fontSize: MyFontSizes.titleMedium, color: hasJoined ? MyColors.dark : MyColors.white),
                   ),
                 ),
               ),
@@ -211,8 +232,9 @@ class _SportDetailPageState extends State<SportDetailPage> {
     );
   }
 
-  void joinEvent(SportEvent sportEvent) async{
-    SportEvent? updatedSportEvent = await sportService.joinEvent(sportEvent, context);
+  void joinEvent(SportEvent sportEvent) async {
+    SportEvent? updatedSportEvent =
+        await sportService.joinEvent(sportEvent, context);
     if (updatedSportEvent != null) {
       setState(() {
         sportEvent = updatedSportEvent;
@@ -220,5 +242,14 @@ class _SportDetailPageState extends State<SportDetailPage> {
         playersAsOfNow = updatedSportEvent.totalPlayersAsOfNow;
       });
     }
+    _checkIfUserHasJoined(sportEvent.id);
+  }
+
+  Future<void> _checkIfUserHasJoined(String sportEventId) async {
+    bool isJoined = await sportEventService.checkIfUserHasJoined(sportEventId);
+    setState(() {
+      hasJoined = isJoined;
+      buttonText = hasJoined ? "You have already joined" : "Join Event";
+    });
   }
 }

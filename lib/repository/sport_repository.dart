@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:team_up/data/account/sport_selection/sport.dart';
 import 'package:team_up/data/account/sport_selection/sport_selection.dart';
 import 'package:team_up/models/custom_user.dart';
+import 'package:team_up/models/user_events.dart';
 import 'package:team_up/repository/auth_repository.dart';
 import 'package:toastification/toastification.dart';
 
@@ -132,9 +133,28 @@ class SportRepository {
   }
 
   Future<SportEvent?> joinEvent(SportEvent sportEvent, BuildContext context) async {
-    final collection = firebaseFirestore.collection("sport");
+    final sportEventCollection = firebaseFirestore.collection("sport");
+    final userEventCollection = firebaseFirestore.collection("user_event");
+    final String userId = authRepository.getCurrentUser().uid;
     try {
-      var docSnapshot = await collection.where('id', isEqualTo: sportEvent.id).get();
+
+      var existingUserEvent = await userEventCollection
+          .where('userId', isEqualTo: userId)
+          .where('sportEventId', isEqualTo: sportEvent.id)
+          .get();
+
+      if (existingUserEvent.docs.isNotEmpty) {
+        Toast toast = Toast(
+            ToastificationType.error,
+            "Already Joined",
+            "You have already joined this event.",
+            Icons.info_outline,
+            MyColors.support.warning);
+        toast.showToast();
+        return null;
+      }
+
+      var docSnapshot = await sportEventCollection.where('id', isEqualTo: sportEvent.id).get();
 
       if (docSnapshot.docs.isNotEmpty) {
         Map<String, dynamic> data = docSnapshot.docs.first.data();
@@ -147,17 +167,31 @@ class SportRepository {
 
           String docId =  docSnapshot.docs.single.id;
 
-          await collection.doc(docId).update({
+          await sportEventCollection.doc(docId).update({
             'missingPlayers' : missingPlayers,
             'totalPlayersAsOfNow': totalPlayersAsOfNow
           });
 
-          var updatedDocSnapshot = await collection.doc(docId).get();
+          var updatedDocSnapshot = await sportEventCollection.doc(docId).get();
           if (updatedDocSnapshot.exists) {
             SportEvent updatedEvent = SportEvent.fromSnapshot(updatedDocSnapshot);
+            String userEventId = userEventCollection.doc().id;
+
+            UserEvents userEvents = UserEvents(id: userEventId, userId: userId, sportEventId: updatedEvent.id);
+            await userEventCollection.add(userEvents.toJson());
+
+            Toast toast = Toast(
+                ToastificationType.success,
+                "Sport Event Joined",
+                "See your event at Upcoming Events.",
+                Icons.check,
+                MyColors.support.success);
+            toast.showToast();
+
             return updatedEvent;
           }
-        } else {
+        }
+        else {
           Toast toast = Toast(
               ToastificationType.error,
               "No slots available",
