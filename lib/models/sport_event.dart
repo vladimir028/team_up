@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:team_up/models/enum/court_type.dart';
 
 class SportEvent {
+  final String id;
   final String sportName;
   final String sportImageUrl;
   final int duration;
@@ -28,11 +29,13 @@ class SportEvent {
       required this.startingTime,
       required this.endingTime,
       required this.selectedDate,
-      required this.courtType});
+      required this.courtType,
+      required this.id});
 
   static SportEvent fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
     return SportEvent(
+      id: snapshot['id'],
       sportName: snapshot['sportName'],
       sportImageUrl: snapshot['sportImageUrl'],
       duration: snapshot['duration'],
@@ -48,8 +51,9 @@ class SportEvent {
     );
   }
 
-  Map<String, dynamic> toJson(BuildContext context) {
+  Map<String, dynamic> toJson() {
     return {
+      "id": id,
       "sportName": sportName,
       "sportImageUrl": sportImageUrl,
       "duration": duration,
@@ -58,8 +62,8 @@ class SportEvent {
       "missingPlayers": missingPlayers,
       "userId": userId,
       'location': location,
-      "startingTime": startingTime.format(context),
-      "endingTime": endingTime.format(context),
+      "startingTime": castToString(startingTime),
+      "endingTime": castToString(endingTime),
       "selectedDate": selectedDate,
       "courtType": courtType.toString().split('.').last,
     };
@@ -74,5 +78,9 @@ class SportEvent {
   static castToEnum(snapshot) {
     return CourtType.values
         .firstWhere((e) => e.toString() == 'CourtType.$snapshot');
+  }
+
+  static castToString(TimeOfDay timeOfDay) {
+    return "${timeOfDay.hour.toString().padLeft(2, '0')}:${timeOfDay.minute.toString().padLeft(2, '0')}";
   }
 }
