@@ -14,6 +14,6 @@ class SportSelection {
         Sport("Tennis", SportIconData.sports_tennis, MyColors.sport.red, "https://images.wallpaperscraft.com/image/single/tennis_court_net_211540_2560x1440.jpg"),
         Sport("Running", SportIconData.run_circle_outlined, MyColors.sport.black, "https://dss.fosterwebmarketing.com/upload/1160/person-running-down-a-street-with-blurred-background%20(1).jpeg"),
         Sport("Handball", SportIconData.sports_handball, MyColors.sport.green, "https://mrwallpaper.com/images/high/caption-intense-handball-match-in-action-mxdvwzrttqe26fvi.jpg"),
-        Sport("Badminton", SportIconData.sports_badminton, MyColors.sport.brown, "https://c0.wallpaperflare.com/preview/177/598/493/badminton-grass-racket-shuttlecocks.jpg"),
+        Sport("Badminton", SportIconData.sports_badminton, MyColors.sport.brown, "https://img2.wallspic.com/previews/8/0/0/6/3/136008/136008-racquet_sport-sports-racket-tennis-sporting_goods-550x310.jpg"),
       ];
 }
