@@ -4,7 +4,7 @@ import 'package:team_up/styles/my_colors.dart';
 
 import '../../../../styles/my_font_sizes.dart';
 
-class HomePageLayout extends StatelessWidget {
+class HomePageLayout extends StatefulWidget {
   final String heading;
   final String description;
   final int indexToStart;
@@ -19,6 +19,31 @@ class HomePageLayout extends StatelessWidget {
   });
 
   @override
+  State<HomePageLayout> createState() => _HomePageLayoutState();
+}
+
+class _HomePageLayoutState extends State<HomePageLayout> {
+  List<Image> imageList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < 6; i++) {
+      imageList.add(
+        Image.asset('lib/data/images/image${widget.indexToStart + i}.jpg'),
+      );
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    for (var image in imageList) {
+      precacheImage(image.image, context);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -27,19 +52,16 @@ class HomePageLayout extends StatelessWidget {
             MasonryGridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 6,
+              itemCount: imageList.length,
               gridDelegate:
-                  const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+              const SliverSimpleGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
               ),
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    'lib/data/images/image${indexToStart + index}.jpg',
-                    fit: BoxFit.cover,
-                  ),
+                  child: imageList[index],
                 ),
               ),
             ),
@@ -48,7 +70,7 @@ class HomePageLayout extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    heading,
+                    widget.heading,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: MyFontSizes.titleXLarge,
@@ -58,7 +80,7 @@ class HomePageLayout extends StatelessWidget {
                   ),
                   const SizedBox(height: 25),
                   Text(
-                    description,
+                    widget.description,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: MyFontSizes.titleBase,
@@ -69,7 +91,7 @@ class HomePageLayout extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: onTap,
+                      onPressed: widget.onTap,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: MyColors.primary.pink500,
                         shadowColor: MyColors.dark,
