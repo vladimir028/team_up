@@ -30,9 +30,7 @@ class _NavigationBarBottomState extends State<NavigationBarBottom> {
         Navigator.pushNamed(context, '/home');
         break;
       case 1:
-        // ili dvete ili edno od ovie
-        // Navigator.pushNamed(context, '/my_favorites');
-        Navigator.pushNamed(context, '/recommendations');
+        Navigator.pushNamed(context, '/upcoming_events');
         break;
       case 2:
         Navigator.pushNamed(context, '/sport_create');
@@ -56,7 +54,7 @@ class _NavigationBarBottomState extends State<NavigationBarBottom> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.travel_explore),
-          label: 'Recommendations',
+          label: 'Upcoming events',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.favorite_border),

@@ -55,4 +55,8 @@ class SportService {
       SportEvent sportEvent, BuildContext context) async {
     return await sportRepository.joinEvent(sportEvent, context);
   }
+
+  Future<List<SportEvent>?> fetchMyUpcomingSportEvents() async {
+    return await sportRepository.fetchMyUpcomingSportEvents();
+  }
 }

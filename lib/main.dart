@@ -7,6 +7,7 @@ import 'package:team_up/presentation/pages/auth/login_page.dart';
 import 'package:team_up/presentation/pages/auth/register_page.dart';
 import 'package:team_up/presentation/pages/create_sport_event_page.dart';
 import 'package:team_up/presentation/pages/home_page.dart';
+import 'package:team_up/presentation/pages/my_upcoming_sport_events.dart';
 import 'package:team_up/presentation/pages/overview/account/account_navigation.dart';
 import 'package:team_up/presentation/pages/overview/onboards/onboard_navigation.dart';
 import 'package:team_up/presentation/pages/sport_detail.dart';
@@ -53,6 +54,7 @@ class _MyAppState extends State<MyApp> {
           '/register': (context) => const RegisterPage(),
           '/account_overview': (context) => const AccountNavigation(),
           '/home': (context) => const HomePage(),
+          '/upcoming_events': (context) => const MyUpcomingSportEvents(),
           '/sport_create': (context) => const SportForm(),
           '/sport_detail': (context) => const SportDetailPage(),
         },

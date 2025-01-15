@@ -216,4 +216,42 @@ class SportRepository {
     }
     return null;
   }
+
+  Future<List<SportEvent>?> fetchMyUpcomingSportEvents() async {
+    final sportCollection = firebaseFirestore.collection("sport");
+    final userSportEventCollection = firebaseFirestore.collection("user_event");
+    final userId = authRepository.getCurrentUser().uid;
+
+
+    try {
+
+      final userEventQuerySnapshot = await userSportEventCollection
+          .where("userId", isEqualTo: userId)
+          .get();
+
+      final sportIds = userEventQuerySnapshot.docs
+          .map((doc) => doc.data()["sportEventId"] as String)
+          .toList();
+
+      if (sportIds.isEmpty) {
+        return [];
+      }
+
+      final sportQuerySnapshot = await sportCollection
+          .where("id", whereIn: sportIds)
+          .get();
+
+      List<SportEvent> sportEvents = sportQuerySnapshot.docs
+          .map((doc) => SportEvent.fromSnapshot(doc))
+          .toList();
+
+      return sportEvents;
+
+    } catch (e) {
+      Toast toast = Toast(ToastificationType.error, "An error occurred",
+          e.toString(), Icons.dangerous_outlined, MyColors.support.error);
+      toast.showToast();
+    }
+    return null;
+  }
 }
