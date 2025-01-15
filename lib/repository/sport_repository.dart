@@ -132,12 +132,12 @@ class SportRepository {
     return null;
   }
 
-  Future<SportEvent?> joinEvent(SportEvent sportEvent, BuildContext context) async {
+  Future<SportEvent?> joinEvent(
+      SportEvent sportEvent, BuildContext context) async {
     final sportEventCollection = firebaseFirestore.collection("sport");
     final userEventCollection = firebaseFirestore.collection("user_event");
     final String userId = authRepository.getCurrentUser().uid;
     try {
-
       var existingUserEvent = await userEventCollection
           .where('userId', isEqualTo: userId)
           .where('sportEventId', isEqualTo: sportEvent.id)
@@ -154,7 +154,9 @@ class SportRepository {
         return null;
       }
 
-      var docSnapshot = await sportEventCollection.where('id', isEqualTo: sportEvent.id).get();
+      var docSnapshot = await sportEventCollection
+          .where('id', isEqualTo: sportEvent.id)
+          .get();
 
       if (docSnapshot.docs.isNotEmpty) {
         Map<String, dynamic> data = docSnapshot.docs.first.data();
@@ -165,19 +167,21 @@ class SportRepository {
           missingPlayers--;
           totalPlayersAsOfNow++;
 
-          String docId =  docSnapshot.docs.single.id;
+          String docId = docSnapshot.docs.single.id;
 
           await sportEventCollection.doc(docId).update({
-            'missingPlayers' : missingPlayers,
+            'missingPlayers': missingPlayers,
             'totalPlayersAsOfNow': totalPlayersAsOfNow
           });
 
           var updatedDocSnapshot = await sportEventCollection.doc(docId).get();
           if (updatedDocSnapshot.exists) {
-            SportEvent updatedEvent = SportEvent.fromSnapshot(updatedDocSnapshot);
+            SportEvent updatedEvent =
+                SportEvent.fromSnapshot(updatedDocSnapshot);
             String userEventId = userEventCollection.doc().id;
 
-            UserEvents userEvents = UserEvents(id: userEventId, userId: userId, sportEventId: updatedEvent.id);
+            UserEvents userEvents = UserEvents(
+                id: userEventId, userId: userId, sportEventId: updatedEvent.id);
             await userEventCollection.add(userEvents.toJson());
 
             Toast toast = Toast(
@@ -190,8 +194,7 @@ class SportRepository {
 
             return updatedEvent;
           }
-        }
-        else {
+        } else {
           Toast toast = Toast(
               ToastificationType.error,
               "No slots available",
@@ -222,9 +225,7 @@ class SportRepository {
     final userSportEventCollection = firebaseFirestore.collection("user_event");
     final userId = authRepository.getCurrentUser().uid;
 
-
     try {
-
       final userEventQuerySnapshot = await userSportEventCollection
           .where("userId", isEqualTo: userId)
           .get();
@@ -237,16 +238,14 @@ class SportRepository {
         return [];
       }
 
-      final sportQuerySnapshot = await sportCollection
-          .where("id", whereIn: sportIds)
-          .get();
+      final sportQuerySnapshot =
+          await sportCollection.where("id", whereIn: sportIds).get();
 
       List<SportEvent> sportEvents = sportQuerySnapshot.docs
           .map((doc) => SportEvent.fromSnapshot(doc))
           .toList();
 
       return sportEvents;
-
     } catch (e) {
       Toast toast = Toast(ToastificationType.error, "An error occurred",
           e.toString(), Icons.dangerous_outlined, MyColors.support.error);
@@ -254,4 +253,126 @@ class SportRepository {
     }
     return null;
   }
+
+  Future<List<SportEvent>?> fetchMyWishlist() async {
+    final sportCollection = firebaseFirestore.collection("sport");
+    final userWishlist = firebaseFirestore.collection("wishlist");
+    final userId = authRepository.getCurrentUser().uid;
+
+    try {
+      final userWishlistQuerySnapshot =
+          await userWishlist.where("userId", isEqualTo: userId).get();
+
+      final sportIds = userWishlistQuerySnapshot.docs
+          .map((doc) => doc.data()["sportEventId"] as String)
+          .toList();
+
+      if (sportIds.isEmpty) {
+        return [];
+      }
+
+      final sportQuerySnapshot =
+          await sportCollection.where("id", whereIn: sportIds).get();
+
+      List<SportEvent> sportEvents = sportQuerySnapshot.docs
+          .map((doc) => SportEvent.fromSnapshot(doc))
+          .toList();
+
+      return sportEvents;
+    } catch (e) {
+      Toast toast = Toast(ToastificationType.error, "An error occurred",
+          e.toString(), Icons.dangerous_outlined, MyColors.support.error);
+      toast.showToast();
+    }
+    return null;
+  }
+
+  Future<void> addToWishlist(String sportEventId) async {
+    final wishlistCollection = firebaseFirestore.collection("wishlist");
+    final String userId = authRepository.getCurrentUser().uid;
+    try {
+      String wishlistId = wishlistCollection.doc().id;
+
+      UserEvents userEvents = UserEvents(
+          id: wishlistId, userId: userId, sportEventId: sportEventId);
+      await wishlistCollection.add(userEvents.toJson());
+
+      Toast toast = Toast(
+        ToastificationType.success,
+        "Added to Wishlist",
+        "The event has been successfully added to your wishlist.",
+        Icons.check_circle_outlined,
+        MyColors.support.success,
+      );
+      toast.showToast();
+    } catch (e) {
+      Toast toast = Toast(
+        ToastificationType.error,
+        "An error occurred",
+        e.toString(),
+        Icons.dangerous_outlined,
+        MyColors.support.error,
+      );
+      toast.showToast();
+    }
+  }
+
+
+  Future<void> removeFromWishlist(String sportEventId) async {
+    final wishlistCollection = firebaseFirestore.collection("wishlist");
+    final String userId = authRepository.getCurrentUser().uid;
+
+    try {
+      final querySnapshot = await wishlistCollection
+          .where("userId", isEqualTo: userId)
+          .where("sportEventId", isEqualTo: sportEventId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var doc in querySnapshot.docs) {
+          await doc.reference.delete();
+        }
+
+        Toast toast = Toast(
+          ToastificationType.success,
+          "Removed from Wishlist",
+          "The event has been successfully removed from your wishlist.",
+          Icons.check_circle_outlined,
+          MyColors.support.success,
+        );
+        toast.showToast();
+      } else {
+        Toast toast = Toast(
+          ToastificationType.warning,
+          "Not Found",
+          "The event was not found in your wishlist.",
+          Icons.warning_amber_outlined,
+          MyColors.support.warning,
+        );
+        toast.showToast();
+      }
+    } catch (e) {
+      Toast toast = Toast(
+        ToastificationType.error,
+        "An error occurred",
+        e.toString(),
+        Icons.dangerous_outlined,
+        MyColors.support.error,
+      );
+      toast.showToast();
+    }
+  }
+
+  Future<bool> checkWishlistStatus(String sportEventId) async{
+    final wishlistCollection = firebaseFirestore.collection("wishlist");
+    final String userId = authRepository.getCurrentUser().uid;
+
+    final querySnapshot = await wishlistCollection
+        .where("userId", isEqualTo: userId)
+        .where("sportEventId", isEqualTo: sportEventId)
+        .get();
+
+    return querySnapshot.docs.isNotEmpty;
+  }
+
 }

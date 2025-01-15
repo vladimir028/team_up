@@ -33,7 +33,7 @@ class _NavigationBarBottomState extends State<NavigationBarBottom> {
         Navigator.pushNamed(context, '/upcoming_events');
         break;
       case 2:
-        Navigator.pushNamed(context, '/sport_create');
+        Navigator.pushNamed(context, '/my_wishlist');
         break;
       case 3:
         Navigator.pushNamed(context, '/sport_create');

@@ -23,6 +23,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
   late int playersAsOfNow;
   String buttonText = "Join Event";
   bool hasJoined = false;
+  bool isInWishlist = false;
 
   final Set<Marker> _markers = {};
 
@@ -44,6 +45,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
     );
 
     _checkIfUserHasJoined(sportEvent.id);
+    _checkWishlistStatus(sportEvent.id);
   }
 
   @override
@@ -73,11 +75,11 @@ class _SportDetailPageState extends State<SportDetailPage> {
                   top: 40,
                   right: 16,
                   child: IconButton(
-                    icon:
-                        const Icon(Icons.favorite_border, color: MyColors.dark),
-                    onPressed: () {
-                      //   TODO: Implement wishlist logic
-                    },
+                      icon: Icon(
+                        isInWishlist ? Icons.favorite : Icons.favorite_border,
+                        color: MyColors.dark,
+                      ),
+                      onPressed: () => _toggleWishlist(sportEvent.id),
                   ),
                 ),
               ],
@@ -250,6 +252,33 @@ class _SportDetailPageState extends State<SportDetailPage> {
     setState(() {
       hasJoined = isJoined;
       buttonText = hasJoined ? "You have already joined" : "Join Event";
+    });
+  }
+
+  void addToWishlist(String sportEventId) {
+    sportService.addToWishlist(sportEventId);
+  }
+
+  void removeFromWishlist(String sportEventId) {
+    sportService.removeFromWishlist(sportEventId);
+  }
+
+  Future<void> _toggleWishlist(String sportEventId) async {
+    if (isInWishlist) {
+      removeFromWishlist(sportEventId);
+    } else {
+      addToWishlist(sportEventId);
+    }
+
+    setState(() {
+      isInWishlist = !isInWishlist;
+    });
+  }
+
+  void _checkWishlistStatus(String sportEventId) async{
+    bool result =await sportService.checkWishlistStatus(sportEventId);
+    setState(() {
+      isInWishlist = result;
     });
   }
 }

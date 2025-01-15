@@ -59,4 +59,20 @@ class SportService {
   Future<List<SportEvent>?> fetchMyUpcomingSportEvents() async {
     return await sportRepository.fetchMyUpcomingSportEvents();
   }
+
+  Future<List<SportEvent>?> fetchMyWishlist() async {
+    return await sportRepository.fetchMyWishlist();
+  }
+
+  Future<void> addToWishlist(String sportEventId) async {
+    await sportRepository.addToWishlist(sportEventId);
+  }
+
+  Future<void> removeFromWishlist(String sportEventId) async{
+    await sportRepository.removeFromWishlist(sportEventId);
+  }
+
+  Future<bool> checkWishlistStatus(String sportEventId) async{
+    return await sportRepository.checkWishlistStatus(sportEventId);
+  }
 }
