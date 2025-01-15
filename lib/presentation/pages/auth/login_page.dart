@@ -26,61 +26,69 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Image.asset(
-              'lib/data/images/logo.png',
-              width: 150,
-              height: 150,
-            ),
-            Text(
-              'Welcome Back!',
-              style: TextStyle(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 60), // Added spacing for better layout
+              Image.asset(
+                'lib/data/images/logo.png',
+                width: 150,
+                height: 150,
+              ),
+              const SizedBox(height: 20), // Spacing between logo and text
+              Text(
+                'Welcome Back!',
+                style: TextStyle(
                   color: MyColors.tertiary.purple900,
                   fontSize: MyFontSizes.titleXLarge,
-                  fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Use Credentials to access your account',
-              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Use Credentials to access your account',
+                style: TextStyle(
                   color: MyColors.tertiary.purple800,
                   fontSize: MyFontSizes.titleBase,
-                  fontWeight: FontWeight.normal),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            InputField(
+                  fontWeight: FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              InputField(
                 controller: _emailController,
                 hintText: "Enter Email",
-                isPasswordField: false),
-            const SizedBox(height: 20),
-            InputField(
+                isPasswordField: false,
+              ),
+              const SizedBox(height: 20),
+              InputField(
                 controller: _passwordController,
                 hintText: "Enter Password",
-                isPasswordField: true),
-            const SizedBox(height: 30),
-             NavigationRoutes(
-              descriptionButton: "Login",
-              routeButton: "/itineraries",
-              descriptionRegular: "Don't have an account? ",
-              descriptionBold: "Sign up",
-              descriptionRoute: "/register",
-              onTap: _signIn,
-            ),
-          ],
+                isPasswordField: true,
+              ),
+              const SizedBox(height: 30),
+              NavigationRoutes(
+                descriptionButton: "Login",
+                routeButton: "/itineraries",
+                descriptionRegular: "Don't have an account? ",
+                descriptionBold: "Sign up",
+                descriptionRoute: "/register",
+                onTap: _signIn,
+              ),
+              const SizedBox(height: 20), // Additional spacing for end padding
+            ],
+          ),
         ),
       ),
     );
@@ -94,11 +102,12 @@ class _LoginPageState extends State<LoginPage> {
 
     if (user != null && mounted) {
       Toast toast = Toast(
-          ToastificationType.success,
-          "User logged in successfully!",
-          "Welcome!",
-          Icons.check,
-          MyColors.support.success);
+        ToastificationType.success,
+        "User logged in successfully!",
+        "Welcome!",
+        Icons.check,
+        MyColors.support.success,
+      );
       toast.showToast();
       Navigator.pushNamed(context, "/home");
     }
