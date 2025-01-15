@@ -15,7 +15,7 @@ class MyUpcomingSportEvents extends StatefulWidget {
 
 class _MyUpcomingSportEventsState extends State<MyUpcomingSportEvents> {
   List<SportEvent> sportEvents = [];
-
+  bool isLoading = true;
   SportService sportService = SportService();
 
   @override
@@ -23,18 +23,20 @@ class _MyUpcomingSportEventsState extends State<MyUpcomingSportEvents> {
     super.initState();
     _fetchSportEvents();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Image.asset('lib/data/images/logo.png')),
+          padding: const EdgeInsets.all(5.0),
+          child: Image.asset('lib/data/images/logo.png'),
+        ),
         actions: const [
           Padding(
             padding: EdgeInsets.all(20.0),
             child: Icon(Icons.notifications),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -44,12 +46,22 @@ class _MyUpcomingSportEventsState extends State<MyUpcomingSportEvents> {
             thickness: 2,
             height: 1,
           ),
-          sportEvents.isEmpty
-              ? const Center(
-            child: CircularProgressIndicator(),
-          )
-              : Expanded(
-            child: ListView.builder(
+          Expanded(
+            child: isLoading
+                ? const Center(
+              child: CircularProgressIndicator(),
+            )
+                : sportEvents.isEmpty
+                ? const Center(
+              child: Text(
+                "You haven't joined any sport event!",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: MyColors.dark,
+                ),
+              ),
+            )
+                : ListView.builder(
               padding: const EdgeInsets.all(8.0),
               itemCount: sportEvents.length,
               itemBuilder: (context, index) {
@@ -70,10 +82,11 @@ class _MyUpcomingSportEventsState extends State<MyUpcomingSportEvents> {
     List<SportEvent>? sportEventsFetched =
     await sportService.fetchMyUpcomingSportEvents();
 
-    if (sportEventsFetched != null) {
-      setState(() {
+    setState(() {
+      isLoading = false;
+      if (sportEventsFetched != null && sportEventsFetched.isNotEmpty) {
         sportEvents = sportEventsFetched;
-      });
-    }
+      }
+    });
   }
 }

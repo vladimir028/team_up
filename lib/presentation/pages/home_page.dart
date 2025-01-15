@@ -18,12 +18,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<SportEvent> sportEvents = [];
   List<SportEvent> filteredSportEvents = [];
-
   List<Sport> selectedSports = [];
-
   List<Sport> selectedSportsFromRegistration = [];
-
   SportService sportService = SportService();
+
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -37,13 +36,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Image.asset('lib/data/images/logo.png')),
+          padding: const EdgeInsets.all(5.0),
+          child: Image.asset('lib/data/images/logo.png'),
+        ),
         actions: const [
           Padding(
             padding: EdgeInsets.all(20.0),
             child: Icon(Icons.notifications),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -56,23 +56,34 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: 100,
             child: FilterSportList(
-                selectedSports: selectedSports,
-                filterSportEvents: _filterSportEvents),
+              selectedSports: selectedSports,
+              filterSportEvents: _filterSportEvents,
+            ),
           ),
-          sportEvents.isEmpty
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8.0),
-                    itemCount: sportEvents.length,
-                    itemBuilder: (context, index) {
-                      final sport = sportEvents[index];
-                      return SportEventCard(sport: sport);
-                    },
-                  ),
+          Expanded(
+            child: isLoading
+                ? const Center(
+              child: CircularProgressIndicator(),
+            )
+                : sportEvents.isEmpty
+                ? const Center(
+              child: Text(
+                "No sport events available.",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: MyColors.dark,
                 ),
+              ),
+            )
+                : ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: sportEvents.length,
+              itemBuilder: (context, index) {
+                final sport = sportEvents[index];
+                return SportEventCard(sport: sport);
+              },
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: const NavigationBarBottom(
@@ -83,32 +94,40 @@ class _HomePageState extends State<HomePage> {
 
   void _fetchSportEvents() async {
     List<SportEvent>? sportEventsFetched =
-        await sportService.fetchSportEvents();
+    await sportService.fetchSportEvents();
 
-    if (sportEventsFetched != null) {
-      setState(() {
+    setState(() {
+      isLoading = false; // Stop the loading spinner
+      if (sportEventsFetched != null && sportEventsFetched.isNotEmpty) {
         sportEvents = sportEventsFetched;
-      });
-    }
+      }
+    });
   }
 
   void _filterSportEvents() async {
     List<String> mappedSelectedSportsName =
-        selectedSports.map((sport) => sport.name).toList();
+    selectedSports.map((sport) => sport.name).toList();
 
     if (mappedSelectedSportsName.isEmpty) {
       _fetchSportEvents();
       return;
     }
 
-    List<SportEvent>? sportEventsFiltered =
-        await sportService.filterSportEvents(mappedSelectedSportsName);
+    setState(() {
+      isLoading = true;
+    });
 
-    if (sportEventsFiltered != null) {
-      setState(() {
+    List<SportEvent>? sportEventsFiltered =
+    await sportService.filterSportEvents(mappedSelectedSportsName);
+
+    setState(() {
+      isLoading = false;
+      if (sportEventsFiltered != null && sportEventsFiltered.isNotEmpty) {
         sportEvents = sportEventsFiltered;
-      });
-    }
+      } else {
+        sportEvents = [];
+      }
+    });
   }
 
   void _userSportPreferences() async {
