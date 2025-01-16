@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:team_up/service/sport_service.dart';
 
-import '../../data/account/sport_selection/sport.dart';
-import '../../models/sport_event.dart';
-import '../../styles/my_colors.dart';
-import '../widgets/filter_sport_list.dart';
-import '../widgets/navigation_bottom.dart';
-import '../widgets/sport_event_card.dart';
+import '../../../data/account/sport_selection/sport.dart';
+import '../../../models/sport_event.dart';
+import '../../../styles/my_colors.dart';
+import '../../widgets/filter_sport_list.dart';
+import '../../widgets/navigation_bottom.dart';
+import '../../widgets/sport_event_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

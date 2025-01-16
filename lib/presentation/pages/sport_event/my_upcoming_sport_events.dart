@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../models/sport_event.dart';
-import '../../service/sport_service.dart';
-import '../../styles/my_colors.dart';
-import '../widgets/navigation_bottom.dart';
-import '../widgets/sport_event_card.dart';
+import '../../../models/sport_event.dart';
+import '../../../service/sport_service.dart';
+import '../../../styles/my_colors.dart';
+import '../../widgets/navigation_bottom.dart';
+import '../../widgets/sport_event_card.dart';
 
 class MyUpcomingSportEvents extends StatefulWidget {
   const MyUpcomingSportEvents({super.key});

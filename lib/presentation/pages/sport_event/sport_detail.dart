@@ -4,8 +4,8 @@ import 'package:team_up/models/sport_event.dart';
 import 'package:team_up/service/sport_event_service.dart';
 import 'package:team_up/service/sport_service.dart';
 
-import '../../styles/my_colors.dart';
-import '../../styles/my_font_sizes.dart';
+import '../../../styles/my_colors.dart';
+import '../../../styles/my_font_sizes.dart';
 
 class SportDetailPage extends StatefulWidget {
   const SportDetailPage({super.key});
