@@ -5,16 +5,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:team_up/firebase_options.dart';
 import 'package:team_up/presentation/pages/auth/login_page.dart';
 import 'package:team_up/presentation/pages/auth/register_page.dart';
-import 'package:team_up/presentation/pages/create_sport_event_page.dart';
-import 'package:team_up/presentation/pages/home_page.dart';
-import 'package:team_up/presentation/pages/my_upcoming_sport_events.dart';
-import 'package:team_up/presentation/pages/my_wishlist_page.dart';
+import 'package:team_up/presentation/pages/sport_event/create_sport_event_page.dart';
 import 'package:team_up/presentation/pages/overview/account/account_navigation.dart';
 import 'package:team_up/presentation/pages/overview/onboards/onboard_navigation.dart';
-import 'package:team_up/presentation/pages/sport_detail.dart';
+import 'package:team_up/presentation/pages/sport_event/home_page.dart';
+import 'package:team_up/presentation/pages/sport_event/my_upcoming_sport_events.dart';
+import 'package:team_up/presentation/pages/sport_event/my_wishlist_page.dart';
+import 'package:team_up/presentation/pages/sport_event/sport_detail.dart';
+import 'package:team_up/presentation/widgets/map_picker.dart';
 import 'package:toastification/toastification.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
@@ -30,17 +31,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
     initialization();
   }
 
-  void initialization() async{
+  void initialization() async {
     await Future.delayed(const Duration(seconds: 3));
     FlutterNativeSplash.remove();
   }
+
   @override
   Widget build(BuildContext context) {
     return ToastificationWrapper(
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
           '/upcoming_events': (context) => const MyUpcomingSportEvents(),
           '/my_wishlist': (context) => const MyWishlistPage(),
           '/sport_create': (context) => const SportForm(),
+          '/map_picker': (context) => MapPicker(),
           '/sport_detail': (context) => const SportDetailPage(),
         },
       ),

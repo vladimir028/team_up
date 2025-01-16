@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:team_up/data/account/sport_selection/sport.dart';
 import 'package:team_up/data/account/sport_selection/sport_selection.dart';
 import 'package:team_up/models/enum/court_type.dart';
+import 'package:team_up/models/location_data.dart';
 import 'package:team_up/presentation/widgets/input_field.dart';
 import 'package:team_up/service/auth_service.dart';
 import 'package:team_up/service/sport_service.dart';
@@ -26,13 +27,13 @@ class SportForm extends StatefulWidget {
 
 class SportFormState extends State<SportForm> {
   final TextEditingController _scheduledTimeStartController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _scheduledTimeEndController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _pricePerHourController = TextEditingController();
   final TextEditingController _totalPlayersController = TextEditingController();
   final TextEditingController _missingPlayersController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController latController = TextEditingController();
   final TextEditingController lngController = TextEditingController();
   DateTime? selectedDate;
@@ -41,6 +42,7 @@ class SportFormState extends State<SportForm> {
   CourtType selectedCourtType = CourtType.indoor;
   Sport selectedSport = SportSelection.sports[0];
 
+  late LocationData? locationData;
   SportService sportService = SportService();
   AuthService authService = AuthService();
 
@@ -75,6 +77,17 @@ class SportFormState extends State<SportForm> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)?.settings.arguments != null) {
+      locationData = ModalRoute.of(context)?.settings.arguments as LocationData;
+    }
+    else {
+      locationData = null;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Sport Form")),
@@ -85,177 +98,168 @@ class SportFormState extends State<SportForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-            Row(
-            children: [
-            Expanded(
-            child: MyDropdownButton<Sport>(
-            value: selectedSport,
-              items: SportSelection.sports,
-              onChanged: (Sport? newValue) {
-                setState(() {
-                  selectedSport = newValue!;
-                });
-              },
-              itemLabel: (sport) => sport.name,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: MyDropdownButton<CourtType>(
-              value: selectedCourtType,
-              items: CourtType.values,
-              onChanged: (CourtType? newValue) {
-                setState(() {
-                  selectedCourtType = newValue!;
-                });
-              },
-              itemLabel: (courtType) =>
-              courtType
-                  .toString()
-                  .split('.')
-                  .last,
-            ),
-          ),
-          ],
-        ),
-        const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: MyDropdownButton<Sport>(
+                        value: selectedSport,
+                        items: SportSelection.sports,
+                        onChanged: (Sport? newValue) {
+                          setState(() {
+                            selectedSport = newValue!;
+                          });
+                        },
+                        itemLabel: (sport) => sport.name,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: MyDropdownButton<CourtType>(
+                        value: selectedCourtType,
+                        items: CourtType.values,
+                        onChanged: (CourtType? newValue) {
+                          setState(() {
+                            selectedCourtType = newValue!;
+                          });
+                        },
+                        itemLabel: (courtType) =>
+                            courtType.toString().split('.').last,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
 
-        StyledButton(
-          onPressed: () => _selectDate(context),
-          label: selectedDate == null
-              ? "Select Date"
-              : "${selectedDate!.toLocal()}".split(' ')[0],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: InputField(
-                controller: _scheduledTimeStartController,
-                hintText: "Starting time",
-                onTap: () =>
-                    _pickTime(
-                      _scheduledTimeStartController,
-                      scheduledTimeStart,
+                StyledButton(
+                  onPressed: () => _selectDate(context),
+                  label: selectedDate == null
+                      ? "Select Date"
+                      : "${selectedDate!.toLocal()}".split(' ')[0],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InputField(
+                        controller: _scheduledTimeStartController,
+                        hintText: "Starting time",
+                        onTap: () => _pickTime(
+                          _scheduledTimeStartController,
+                          scheduledTimeStart,
                           (newTime) {
+                            setState(() {
+                              scheduledTimeStart = newTime;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: InputField(
+                        controller: _scheduledTimeEndController,
+                        hintText: "Ending time",
+                        onTap: () => _pickTime(
+                          _scheduledTimeEndController,
+                          scheduledTimeEnd,
+                          (newTime) {
+                            setState(() {
+                              scheduledTimeEnd = newTime;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                InputField(
+                  controller: _pricePerHourController,
+                  hintText: "Price Per Hour",
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+                StyledButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/map_picker'),
+                    label: locationData?.name ?? 'Choose Location'),
+                // InputField(
+                //   controller: latController,
+                //   hintText: "Latitude",
+                //   keyboardType: TextInputType.number,
+                // ),
+                // const SizedBox(height: 16),
+                // InputField(
+                //   controller: lngController,
+                //   hintText: "Longitude",
+                //   keyboardType: TextInputType.number,
+                // ),
+                const SizedBox(height: 24),
+                Row(children: [
+                  Expanded(
+                    child: PlayerCounterWidget(
+                      labelText: "Total Players As Of Now",
+                      controller: _totalPlayersController,
+                      onIncrement: () {
                         setState(() {
-                          scheduledTimeStart = newTime;
+                          int currentValue =
+                              int.tryParse(_totalPlayersController.text) ?? 0;
+                          _totalPlayersController.text =
+                              (currentValue + 1).toString();
+                        });
+                      },
+                      onDecrement: () {
+                        setState(() {
+                          int currentValue =
+                              int.tryParse(_totalPlayersController.text) ?? 0;
+                          _totalPlayersController.text = (currentValue - 1)
+                              .clamp(0, double.infinity)
+                              .toString();
                         });
                       },
                     ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: InputField(
-                controller: _scheduledTimeEndController,
-                hintText: "Ending time",
-                onTap: () =>
-                    _pickTime(
-                      _scheduledTimeEndController,
-                      scheduledTimeEnd,
-                          (newTime) {
+                  ),
+                  Expanded(
+                    child: PlayerCounterWidget(
+                      labelText: "Missing Players",
+                      controller: _missingPlayersController,
+                      onIncrement: () {
                         setState(() {
-                          scheduledTimeEnd = newTime;
+                          int currentValue =
+                              int.tryParse(_missingPlayersController.text) ?? 0;
+                          _missingPlayersController.text =
+                              (currentValue + 1).toString();
+                        });
+                      },
+                      onDecrement: () {
+                        setState(() {
+                          int currentValue =
+                              int.tryParse(_missingPlayersController.text) ?? 0;
+                          _missingPlayersController.text = (currentValue - 1)
+                              .clamp(0, double.infinity)
+                              .toString();
                         });
                       },
                     ),
-              ),
+                  ),
+                ]),
+                const SizedBox(height: 30),
+                // Submit button
+                NavigationRoutes(
+                  descriptionButton: "Submit",
+                  routeButton: "/home",
+                  descriptionRegular: "",
+                  descriptionBold: "",
+                  descriptionRoute: "",
+                  onTap: addSportEvent,
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-
-        InputField(
-          controller: _pricePerHourController,
-          hintText: "Price Per Hour",
-          keyboardType: TextInputType.number,
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, '/map_picker'),
-            child: const Text("Choose location")),
-        InputField(
-        controller: latController,
-        hintText: "Latitude",
-        keyboardType: TextInputType.number,
-      ),
-      const SizedBox(height: 16),
-      InputField(
-        controller: lngController,
-        hintText: "Longitude",
-        keyboardType: TextInputType.number,
-      ),
-      const SizedBox(height: 24),
-      Row(children: [
-        Expanded(
-          child: PlayerCounterWidget(
-            labelText: "Total Players As Of Now",
-            controller: _totalPlayersController,
-            onIncrement: () {
-              setState(() {
-                int currentValue =
-                    int.tryParse(_totalPlayersController.text) ?? 0;
-                _totalPlayersController.text =
-                    (currentValue + 1).toString();
-              });
-            },
-            onDecrement: () {
-              setState(() {
-                int currentValue =
-                    int.tryParse(_totalPlayersController.text) ?? 0;
-                _totalPlayersController.text = (currentValue - 1)
-                    .clamp(0, double.infinity)
-                    .toString();
-              });
-            },
           ),
         ),
-        Expanded(
-          child: PlayerCounterWidget(
-            labelText: "Missing Players",
-            controller: _missingPlayersController,
-            onIncrement: () {
-              setState(() {
-                int currentValue =
-                    int.tryParse(_missingPlayersController.text) ?? 0;
-                _missingPlayersController.text =
-                    (currentValue + 1).toString();
-              });
-            },
-            onDecrement: () {
-              setState(() {
-                int currentValue =
-                    int.tryParse(_missingPlayersController.text) ?? 0;
-                _missingPlayersController.text = (currentValue - 1)
-                    .clamp(0, double.infinity)
-                    .toString();
-              });
-            },
-          ),
-        ),
-      ]),
-      const SizedBox(height: 30),
-      // Submit button
-      NavigationRoutes(
-        descriptionButton: "Submit",
-        routeButton: "/home",
-        descriptionRegular: "",
-        descriptionBold: "",
-        descriptionRoute: "",
-        onTap: addSportEvent,
       ),
-      ],
-    ),
-    ),
-    ),
-    ),
-    bottomNavigationBar: const NavigationBarBottom(
-    currentPage
-    :
-    3
-    )
-    ,
+      bottomNavigationBar: const NavigationBarBottom(currentPage: 3),
     );
   }
 
@@ -267,11 +271,9 @@ class SportFormState extends State<SportForm> {
         _pricePerHourController.text,
         _totalPlayersController.text,
         _missingPlayersController.text,
-        authService
-            .getCurrentUser()
-            .uid,
-        GeoPoint(
-            double.parse(latController.text), double.parse(lngController.text)),
+        authService.getCurrentUser().uid,
+        GeoPoint(locationData?.latitude ?? 0, locationData?.longitude ?? 0),
+        locationData?.name ?? "",
         scheduledTimeStart,
         scheduledTimeEnd,
         selectedDate,
@@ -289,8 +291,8 @@ class SportFormState extends State<SportForm> {
     }
   }
 
-  int calculateMinutesDifference(TimeOfDay scheduledTimeEnd,
-      TimeOfDay scheduledTimeStart) {
+  int calculateMinutesDifference(
+      TimeOfDay scheduledTimeEnd, TimeOfDay scheduledTimeStart) {
     int startMinutes = scheduledTimeStart.hour * 60 + scheduledTimeStart.minute;
     int endMinutes = scheduledTimeEnd.hour * 60 + scheduledTimeEnd.minute;
 

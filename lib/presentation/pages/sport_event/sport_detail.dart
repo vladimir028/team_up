@@ -89,7 +89,6 @@ class _SportDetailPageState extends State<SportDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title and Price
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -116,7 +115,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Latitude: ${sportEvent.location.latitude}, Longitude: ${sportEvent.location.longitude}',
+                          sportEvent.locationAddress,
                           style: const TextStyle(
                               fontSize: MyFontSizes.titleBase,
                               color: MyColors.gray),

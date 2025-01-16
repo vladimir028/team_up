@@ -12,6 +12,7 @@ class SportEvent {
   final int missingPlayers;
   final String userId;
   final GeoPoint location;
+  final String locationAddress;
   final TimeOfDay startingTime;
   final TimeOfDay endingTime;
   final DateTime selectedDate;
@@ -26,6 +27,7 @@ class SportEvent {
       required this.missingPlayers,
       required this.userId,
       required this.location,
+      required this.locationAddress,
       required this.startingTime,
       required this.endingTime,
       required this.selectedDate,
@@ -44,6 +46,7 @@ class SportEvent {
       missingPlayers: snapshot['missingPlayers'],
       userId: snapshot['userId'],
       location: snapshot['location'],
+      locationAddress: snapshot['locationAddress'],
       startingTime: castToTimeOfDay(snapshot['startingTime']),
       endingTime: castToTimeOfDay(snapshot['endingTime']),
       selectedDate: (snapshot['selectedDate'] as Timestamp).toDate(),
@@ -62,6 +65,7 @@ class SportEvent {
       "missingPlayers": missingPlayers,
       "userId": userId,
       'location': location,
+      'locationAddress': locationAddress,
       "startingTime": castToString(startingTime),
       "endingTime": castToString(endingTime),
       "selectedDate": selectedDate,
