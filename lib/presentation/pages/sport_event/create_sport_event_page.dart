@@ -26,14 +26,15 @@ class SportForm extends StatefulWidget {
 }
 
 class SportFormState extends State<SportForm> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _scheduledTimeStartController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _scheduledTimeEndController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _pricePerHourController = TextEditingController();
   final TextEditingController _totalPlayersController = TextEditingController();
   final TextEditingController _missingPlayersController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController latController = TextEditingController();
   final TextEditingController lngController = TextEditingController();
   DateTime? selectedDate;
@@ -62,16 +63,24 @@ class SportFormState extends State<SportForm> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  bool isAfter(TimeOfDay time1, TimeOfDay time2) {
+    int minutes1 = time1.hour * 60 + time1.minute;
+    int minutes2 = time2.hour * 60 + time2.minute;
+    return minutes1 > minutes2;
+  }
+
+  Future<void> _selectDate(BuildContext context,
+      FormFieldState<DateTime> state) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        state.didChange(selectedDate);
       });
     }
   }
@@ -79,10 +88,15 @@ class SportFormState extends State<SportForm> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (ModalRoute.of(context)?.settings.arguments != null) {
-      locationData = ModalRoute.of(context)?.settings.arguments as LocationData;
-    }
-    else {
+    if (ModalRoute
+        .of(context)
+        ?.settings
+        .arguments != null) {
+      locationData = ModalRoute
+          .of(context)
+          ?.settings
+          .arguments as LocationData;
+    } else {
       locationData = null;
     }
   }
@@ -95,6 +109,7 @@ class SportFormState extends State<SportForm> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -123,61 +138,130 @@ class SportFormState extends State<SportForm> {
                           });
                         },
                         itemLabel: (courtType) =>
-                            courtType.toString().split('.').last,
+                        courtType
+                            .toString()
+                            .split('.')
+                            .last,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
 
-                StyledButton(
-                  onPressed: () => _selectDate(context),
-                  label: selectedDate == null
-                      ? "Select Date"
-                      : "${selectedDate!.toLocal()}".split(' ')[0],
+                FormField<DateTime>(
+                  builder: (FormFieldState<DateTime> state) {
+                    return Column(crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        StyledButton(
+                          onPressed: () => _selectDate(context, state),
+                          label: selectedDate == null
+                              ? "Select Date"
+                              : "${selectedDate!.toLocal()}".split(' ')[0],
+                        ),
+                        if (state.hasError)
+                          Text(
+                            state.errorText ?? '',
+                            style: TextStyle(color: MyColors.support.formError),
+                          ),
+                      ],
+                    );
+                  },
+                  validator: (value) {
+                    if (selectedDate == null) {
+                      return 'Please select a date';
+                    }
+                    if (selectedDate!.isBefore(DateTime.now())) {
+                      return 'The date must be today or in the future';
+                    }
+                    return null;
+                  },
                 ),
+
                 const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
-                      child: InputField(
+                      child: TextFormField(
                         controller: _scheduledTimeStartController,
-                        hintText: "Starting time",
-                        onTap: () => _pickTime(
-                          _scheduledTimeStartController,
-                          scheduledTimeStart,
-                          (newTime) {
-                            setState(() {
-                              scheduledTimeStart = newTime;
-                            });
-                          },
-                        ),
+                        decoration: InputDecoration(hintText: "Starting time"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter start time';
+                          }
+                          TimeOfDay time = TimeOfDay(
+                              hour: int.parse(value.split(":")[0]),
+                              minute: int.parse(value.split(":")[1]));
+                          if (!isAfter(time, TimeOfDay.now())) {
+                            return 'Time must be in the future';
+                          }
+                          return null;
+                        },
+                        onTap: () =>
+                            _pickTime(
+                              _scheduledTimeStartController,
+                              scheduledTimeStart,
+                                  (newTime) {
+                                setState(() {
+                                  scheduledTimeStart = newTime;
+                                });
+                              },
+                            ),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: InputField(
+                      child: TextFormField(
                         controller: _scheduledTimeEndController,
-                        hintText: "Ending time",
-                        onTap: () => _pickTime(
-                          _scheduledTimeEndController,
-                          scheduledTimeEnd,
-                          (newTime) {
-                            setState(() {
-                              scheduledTimeEnd = newTime;
-                            });
-                          },
-                        ),
+                        decoration: InputDecoration(hintText: "Ending time"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter end time';
+                          }
+                          TimeOfDay time = TimeOfDay(
+                              hour: int.parse(value.split(":")[0]),
+                              minute: int.parse(value.split(":")[1]));
+                          if (!isAfter(time, scheduledTimeStart)) {
+                            return 'Time must be after start';
+                          }
+                          return null;
+                        },
+                        onTap: () =>
+                            _pickTime(
+                              _scheduledTimeEndController,
+                              scheduledTimeEnd,
+                                  (newTime) {
+                                setState(() {
+                                  scheduledTimeEnd = newTime;
+                                });
+                              },
+                            ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
 
-                InputField(
+                TextFormField(
                   controller: _pricePerHourController,
-                  hintText: "Price Per Hour",
+                  decoration: InputDecoration(hintText: "Price Per Hour"),
                   keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a price per hour';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Price must be a number';
+                    }
+                    if (int.tryParse(value)!.isNegative) {
+                      return 'Please enter a valid price';
+                    }
+                    return null;
+                  },
+                  onChanged: (value){
+                    setState(() {
+                      _pricePerHourController.text = value;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
                 StyledButton(
@@ -264,6 +348,10 @@ class SportFormState extends State<SportForm> {
   }
 
   void addSportEvent() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     SportEvent? savedSport = await sportService.addSport(
         selectedSport.name,
         selectedSport.imgUrl,
@@ -271,7 +359,9 @@ class SportFormState extends State<SportForm> {
         _pricePerHourController.text,
         _totalPlayersController.text,
         _missingPlayersController.text,
-        authService.getCurrentUser().uid,
+        authService
+            .getCurrentUser()
+            .uid,
         GeoPoint(locationData?.latitude ?? 0, locationData?.longitude ?? 0),
         locationData?.name ?? "",
         scheduledTimeStart,
@@ -291,8 +381,8 @@ class SportFormState extends State<SportForm> {
     }
   }
 
-  int calculateMinutesDifference(
-      TimeOfDay scheduledTimeEnd, TimeOfDay scheduledTimeStart) {
+  int calculateMinutesDifference(TimeOfDay scheduledTimeEnd,
+      TimeOfDay scheduledTimeStart) {
     int startMinutes = scheduledTimeStart.hour * 60 + scheduledTimeStart.minute;
     int endMinutes = scheduledTimeEnd.hour * 60 + scheduledTimeEnd.minute;
 

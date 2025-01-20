@@ -61,6 +61,7 @@ class _TertiaryColors {
 
 class _SupportColors {
   final error = const Color(0xFFFA4D56);
+  final formError = const Color(0xF4A10F0F);
   final success = const Color(0xFF42BE65);
   final warning = const Color(0xFFF1C21B);
   final info = const Color(0xFF4589FF);

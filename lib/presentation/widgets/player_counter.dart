@@ -19,7 +19,9 @@ class PlayerCounterWidget extends StatelessWidget {
     return Column(
       children: [
         Text(labelText),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -29,13 +31,23 @@ class PlayerCounterWidget extends StatelessWidget {
             ),
             SizedBox(
               width: 50,
-              child: TextField(
+              child: TextFormField(
                 controller: controller,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Invalid';
+                  }
+                  var number = int.tryParse(value);
+                  if (number == null || number.isNegative) {
+                    return 'Invalid';
+                  }
+                  return null;
+                },
               ),
             ),
             IconButton(

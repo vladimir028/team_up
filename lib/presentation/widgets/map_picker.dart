@@ -212,7 +212,8 @@ class _MapPickerState extends State<MapPicker> {
             left: 100,
             child: FloatingActionButton(
               heroTag: "btn2",
-              onPressed: () => Navigator.pushNamed(context, '/sport_create', arguments: _selectedLocation),
+              onPressed: () =>
+                  Navigator.popAndPushNamed(context, '/sport_create', arguments: _selectedLocation),
               child: const Icon(Icons.save),
             ),
           ),
