@@ -15,13 +15,17 @@ import 'package:team_up/presentation/pages/sport_event/my_wishlist_page.dart';
 import 'package:team_up/presentation/pages/sport_event/sport_detail.dart';
 import 'package:team_up/presentation/widgets/map_picker.dart';
 import 'package:team_up/provider/sport_form_provider.dart';
+import 'package:team_up/service/notification_service.dart';
 import 'package:toastification/toastification.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationService.instance.initialize();
+
   runApp(const MyApp());
 }
 
@@ -50,6 +54,7 @@ class _MyAppState extends State<MyApp> {
       create: (context) => SportFormProvider(),
       child: ToastificationWrapper(
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           title: 'Team Up',
           theme: ThemeData(textTheme: GoogleFonts.poppinsTextTheme()),
