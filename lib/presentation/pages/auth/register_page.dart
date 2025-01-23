@@ -89,7 +89,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _signUp() async {
-    String email = _emailController.text;
+    String email = _emailController.text.trim();
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 

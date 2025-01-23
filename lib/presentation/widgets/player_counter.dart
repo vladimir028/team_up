@@ -39,7 +39,7 @@ class PlayerCounterWidget extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null) {
+                  if (value == null || value.isEmpty) {
                     return 'Invalid';
                   }
                   var number = int.tryParse(value);

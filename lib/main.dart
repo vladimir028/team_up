@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:team_up/firebase_options.dart';
 import 'package:team_up/presentation/pages/auth/login_page.dart';
 import 'package:team_up/presentation/pages/auth/register_page.dart';
@@ -13,6 +14,7 @@ import 'package:team_up/presentation/pages/sport_event/my_upcoming_sport_events.
 import 'package:team_up/presentation/pages/sport_event/my_wishlist_page.dart';
 import 'package:team_up/presentation/pages/sport_event/sport_detail.dart';
 import 'package:team_up/presentation/widgets/map_picker.dart';
+import 'package:team_up/provider/sport_form_provider.dart';
 import 'package:toastification/toastification.dart';
 
 Future<void> main() async {
@@ -44,24 +46,27 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ToastificationWrapper(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Team Up',
-        theme: ThemeData(textTheme: GoogleFonts.poppinsTextTheme()),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const OnboardNavigation(),
-          '/login': (context) => const LoginPage(),
-          '/register': (context) => const RegisterPage(),
-          '/account_overview': (context) => const AccountNavigation(),
-          '/home': (context) => const HomePage(),
-          '/upcoming_events': (context) => const MyUpcomingSportEvents(),
-          '/my_wishlist': (context) => const MyWishlistPage(),
-          '/sport_create': (context) => const SportForm(),
-          '/map_picker': (context) => MapPicker(),
-          '/sport_detail': (context) => const SportDetailPage(),
-        },
+    return ChangeNotifierProvider(
+      create: (context) => SportFormProvider(),
+      child: ToastificationWrapper(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Team Up',
+          theme: ThemeData(textTheme: GoogleFonts.poppinsTextTheme()),
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const OnboardNavigation(),
+            '/login': (context) => const LoginPage(),
+            '/register': (context) => const RegisterPage(),
+            '/account_overview': (context) => const AccountNavigation(),
+            '/home': (context) => const HomePage(),
+            '/upcoming_events': (context) => const MyUpcomingSportEvents(),
+            '/my_wishlist': (context) => const MyWishlistPage(),
+            '/sport_create': (context) => const SportForm(),
+            '/map_picker': (context) => MapPicker(),
+            '/sport_detail': (context) => const SportDetailPage(),
+          },
+        ),
       ),
     );
   }
