@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:team_up/service/auth_service.dart';
 import 'package:team_up/service/sport_service.dart';
 
 import '../../../data/account/sport_selection/sport.dart';
@@ -21,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   List<Sport> selectedSports = [];
   List<Sport> selectedSportsFromRegistration = [];
   SportService sportService = SportService();
+  AuthService authService = AuthService();
 
   bool isLoading = true;
 
@@ -39,10 +41,19 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(5.0),
           child: Image.asset('lib/data/images/logo.png'),
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(20.0),
+        actions: [
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Icon(Icons.notifications),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () async {
+                await logoffUser();
+              },
+              child: const Icon(Icons.logout_outlined),
+            ),
           ),
         ],
       ),
@@ -137,5 +148,9 @@ class _HomePageState extends State<HomePage> {
         selectedSportsFromRegistration = usersFavSports;
       });
     }
+  }
+
+  logoffUser() {
+    authService.logoff(context);
   }
 }
