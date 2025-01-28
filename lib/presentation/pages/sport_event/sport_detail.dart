@@ -255,7 +255,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: hasJoined ? null : () => joinEvent(sportEvent),
+                  onPressed: hasJoined ? () => cancelEvent(sportEvent) : () => joinEvent(sportEvent),
                   child: Text(
                     buttonText,
                     style: TextStyle(fontSize: MyFontSizes.titleMedium, color: hasJoined ? MyColors.dark : MyColors.white),
@@ -286,7 +286,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
     bool isJoined = await sportEventService.checkIfUserHasJoined(sportEventId);
     setState(() {
       hasJoined = isJoined;
-      buttonText = hasJoined ? "You have already joined" : "Join Event";
+      buttonText = hasJoined ? "Leave Event" : "Join Event";
     });
   }
 
@@ -325,5 +325,18 @@ class _SportDetailPageState extends State<SportDetailPage> {
         this.organizer = organizer.username;
       });
     }
+  }
+
+  cancelEvent(SportEvent sportEvent) async{
+    SportEvent? updatedSportEvent =
+        await sportService.cancelEvent(sportEvent, context);
+    if (updatedSportEvent != null) {
+      setState(() {
+        sportEvent = updatedSportEvent;
+        missingPlayers = updatedSportEvent.missingPlayers;
+        playersAsOfNow = updatedSportEvent.totalPlayersAsOfNow;
+      });
+    }
+    _checkIfUserHasJoined(sportEvent.id);
   }
 }
