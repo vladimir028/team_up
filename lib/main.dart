@@ -10,9 +10,10 @@ import 'package:team_up/presentation/pages/sport_event/create_sport_event_page.d
 import 'package:team_up/presentation/pages/overview/account/account_navigation.dart';
 import 'package:team_up/presentation/pages/overview/onboards/onboard_navigation.dart';
 import 'package:team_up/presentation/pages/sport_event/home_page.dart';
-import 'package:team_up/presentation/pages/sport_event/my_upcoming_sport_events.dart';
-import 'package:team_up/presentation/pages/sport_event/my_wishlist_page.dart';
+
 import 'package:team_up/presentation/pages/sport_event/sport_detail.dart';
+import 'package:team_up/presentation/pages/sport_event/wrapper/my_upcoming_sport_events_page.dart';
+import 'package:team_up/presentation/pages/sport_event/wrapper/my_wishlist_page.dart';
 import 'package:team_up/presentation/widgets/map_picker.dart';
 import 'package:team_up/provider/sport_form_provider.dart';
 import 'package:team_up/service/notification_service.dart';
@@ -65,7 +66,7 @@ class _MyAppState extends State<MyApp> {
             '/register': (context) => const RegisterPage(),
             '/account_overview': (context) => const AccountNavigation(),
             '/home': (context) => const HomePage(),
-            '/upcoming_events': (context) => const MyUpcomingSportEvents(),
+            '/upcoming_events': (context) => const MyUpcomingSportEventsPage(),
             '/my_wishlist': (context) => const MyWishlistPage(),
             '/sport_create': (context) => const SportForm(),
             '/map_picker': (context) => MapPicker(),
