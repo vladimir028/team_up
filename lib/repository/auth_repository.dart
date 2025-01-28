@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:team_up/models/custom_user.dart';
 import 'package:team_up/data/account/sport_selection/sport.dart';
+import 'package:team_up/presentation/pages/auth/login_page.dart';
 import 'package:toastification/toastification.dart';
 
 import '../global/toast.dart';
@@ -100,15 +101,17 @@ class AuthRepository {
     return _auth.currentUser!;
   }
 
-  Future<void> logoff() async {
+  Future<void> logoff(BuildContext context) async {
     await _auth.signOut();
     Toast toast = Toast(
         ToastificationType.success,
         "User logged out successfully",
-        "Welcome to home page",
+        "Welcome to Login Screen",
         Icons.check,
         MyColors.support.success);
     toast.showToast();
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()),(route) => false);
+
   }
 
   bool passwordAndConfirmPasswordMatch(
