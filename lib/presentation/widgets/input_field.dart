@@ -10,20 +10,23 @@ class InputField extends StatefulWidget {
   final TextInputType? keyboardType;
   final VoidCallback? onTap;
 
-  const InputField(
-      {super.key,
-      this.controller,
-      this.hintText,
-      this.isPasswordField,
-      this.isDateField,
-      this.keyboardType,
-      this.onTap});
+  const InputField({
+    super.key,
+    this.controller,
+    this.hintText,
+    this.isPasswordField,
+    this.isDateField,
+    this.keyboardType,
+    this.onTap,
+  });
 
   @override
   State<InputField> createState() => _InputFieldState();
 }
 
 class _InputFieldState extends State<InputField> {
+  bool _isPasswordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -31,11 +34,28 @@ class _InputFieldState extends State<InputField> {
         labelText: widget.hintText,
         border: const OutlineInputBorder(
           borderSide: BorderSide(
-              color: MyColors.dark, width: 2.0, style: BorderStyle.solid),
+            color: MyColors.dark,
+            width: 2.0,
+            style: BorderStyle.solid,
+          ),
         ),
+        suffixIcon: widget.isPasswordField == true
+            ? IconButton(
+          icon: Icon(
+            _isPasswordVisible
+                ? Icons.visibility
+                : Icons.visibility_off,
+          ),
+          onPressed: () {
+            setState(() {
+              _isPasswordVisible = !_isPasswordVisible;
+            });
+          },
+        )
+            : const Icon(Icons.email),
       ),
       controller: widget.controller,
-      obscureText: widget.isPasswordField ?? false,
+      obscureText: widget.isPasswordField == true && !_isPasswordVisible,
       readOnly: widget.isDateField ?? false,
       keyboardType: widget.keyboardType,
       onTap: widget.onTap,
