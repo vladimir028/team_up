@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:team_up/models/custom_user.dart';
 import 'package:team_up/models/sport_event.dart';
 import 'package:team_up/service/sport_event_service.dart';
 import 'package:team_up/service/sport_service.dart';
@@ -24,8 +25,9 @@ class _SportDetailPageState extends State<SportDetailPage> {
   String buttonText = "Join Event";
   bool hasJoined = false;
   bool isInWishlist = false;
-
+  String organizer = "";
   final Set<Marker> _markers = {};
+  bool isLoading = true;
 
   @override
   void didChangeDependencies() {
@@ -39,17 +41,40 @@ class _SportDetailPageState extends State<SportDetailPage> {
       Marker(
         markerId: const MarkerId('event_location'),
         position:
-            LatLng(sportEvent.location.latitude, sportEvent.location.longitude),
+        LatLng(sportEvent.location.latitude, sportEvent.location.longitude),
         infoWindow: InfoWindow(title: sportEvent.sportName),
       ),
     );
 
-    _checkIfUserHasJoined(sportEvent.id);
-    _checkWishlistStatus(sportEvent.id);
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await _checkIfUserHasJoined(sportEvent.id);
+    await _checkWishlistStatus(sportEvent.id);
+    await _fetchOrganizer(sportEvent.id);
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: MyColors.primary.pink500,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -75,11 +100,11 @@ class _SportDetailPageState extends State<SportDetailPage> {
                   top: 40,
                   right: 16,
                   child: IconButton(
-                      icon: Icon(
-                        isInWishlist ? Icons.favorite : Icons.favorite_border,
-                        color: MyColors.dark,
-                      ),
-                      onPressed: () => _toggleWishlist(sportEvent.id),
+                    icon: Icon(
+                      isInWishlist ? Icons.favorite : Icons.favorite_border,
+                      color: MyColors.dark,
+                    ),
+                    onPressed: () => _toggleWishlist(sportEvent.id),
                   ),
                 ),
               ],
@@ -132,7 +157,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       Text(
                         'Date: ${sportEvent.selectedDate.toLocal().toString().split(' ')[0]}',
                         style:
-                            const TextStyle(fontSize: MyFontSizes.titleMedium),
+                        const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                     ],
                   ),
@@ -144,7 +169,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       Text(
                         'Time: ${sportEvent.startingTime.format(context)} - ${sportEvent.endingTime.format(context)}',
                         style:
-                            const TextStyle(fontSize: MyFontSizes.titleMedium),
+                        const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                     ],
                   ),
@@ -155,7 +180,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       Text(
                         'Total Players: $playersAsOfNow',
                         style:
-                            const TextStyle(fontSize: MyFontSizes.titleMedium),
+                        const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                       Text(
                         'Missing Players: $missingPlayers',
@@ -175,12 +200,23 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       Text(
                         'Court Type: ${sportEvent.courtType.toString().split('.').last}',
                         style:
-                            const TextStyle(fontSize: MyFontSizes.titleMedium),
+                        const TextStyle(fontSize: MyFontSizes.titleMedium),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.supervised_user_circle, color: MyColors.dark),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Organized By: $organizer',
+                        style:
+                        const TextStyle(fontSize: MyFontSizes.titleMedium),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-
                   const Text(
                     'Location',
                     style: TextStyle(
@@ -235,7 +271,7 @@ class _SportDetailPageState extends State<SportDetailPage> {
 
   void joinEvent(SportEvent sportEvent) async {
     SportEvent? updatedSportEvent =
-        await sportService.joinEvent(sportEvent, context);
+    await sportService.joinEvent(sportEvent, context);
     if (updatedSportEvent != null) {
       setState(() {
         sportEvent = updatedSportEvent;
@@ -274,10 +310,20 @@ class _SportDetailPageState extends State<SportDetailPage> {
     });
   }
 
-  void _checkWishlistStatus(String sportEventId) async{
+  Future<void> _checkWishlistStatus(String sportEventId) async{
     bool result =await sportService.checkWishlistStatus(sportEventId);
     setState(() {
       isInWishlist = result;
     });
+  }
+
+  Future<void> _fetchOrganizer(String sportEventId) async{
+    CustomUser? organizer = await sportEventService.getOrganizer(sportEventId);
+
+    if (organizer != null) {
+      setState(() {
+        this.organizer = organizer.username;
+      });
+    }
   }
 }
