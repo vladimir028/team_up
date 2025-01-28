@@ -19,6 +19,12 @@ class _MyWishlistPageState extends State<MyWishlistPage> {
   final int pageNum = 2;
 
   @override
+  void initState() {
+    _fetchSportEvents();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SportEventPageLayout(
         sportEvents: sportEvents,
