@@ -47,6 +47,9 @@ class _MyWishlistPageState extends State<MyWishlistPage> {
       if (sportEventsFetched != null && sportEventsFetched.isNotEmpty) {
         sportEvents = sportEventsFetched;
       }
+      else {
+        sportEvents = [];
+      }
     });
   }
 }
