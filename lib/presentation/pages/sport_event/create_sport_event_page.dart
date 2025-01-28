@@ -8,9 +8,11 @@ import 'package:team_up/provider/sport_form_provider.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../global/toast.dart';
+import '../../../models/location_data.dart';
 import '../../../models/sport_event.dart';
 import '../../../styles/my_colors.dart';
 import '../../widgets/dropdownlist.dart';
+import '../../widgets/map_picker.dart';
 import '../../widgets/navigation_bottom.dart';
 import '../../widgets/navigation_routes.dart';
 import '../../widgets/player_counter.dart';
@@ -173,20 +175,25 @@ class _SportFormState extends State<SportForm> {
                 ),
                 const SizedBox(height: 16),
                 StyledButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/map_picker'),
-                    label: 'Choose Location'),
-                // InputField(
-                //   controller: latController,
-                //   hintText: "Latitude",
-                //   keyboardType: TextInputType.number,
-                // ),
-                // const SizedBox(height: 16),
-                // InputField(
-                //   controller: lngController,
-                //   hintText: "Longitude",
-                //   keyboardType: TextInputType.number,
-                // ),
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MapPicker(
+                          onLocationSelected: (LocationData location) {
+                            provider.updateSelectedLocation(
+                                location); // Save in the provider
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  label: provider.locationData == null
+                      ? 'Choose Location'
+                      : provider.locationData!.name.isNotEmpty
+                          ? provider.locationData!.name.toString()
+                          : 'Coordinates: ${provider.locationData!.latitude}, ${provider.locationData!.longitude}',
+                ),
                 const SizedBox(height: 24),
                 Row(children: [
                   Expanded(

@@ -206,4 +206,9 @@ class SportFormProvider extends ChangeNotifier {
     selectedDate = null;
 
   }
+
+  void updateSelectedLocation(LocationData location) {
+    locationData = location;
+    notifyListeners();
+  }
 }
