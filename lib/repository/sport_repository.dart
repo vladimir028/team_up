@@ -222,6 +222,94 @@ class SportRepository {
     return null;
   }
 
+  Future<SportEvent?> cancelEvent(SportEvent sportEvent, BuildContext context) async {
+    final sportEventCollection = firebaseFirestore.collection("sport");
+    final userEventCollection = firebaseFirestore.collection("user_event");
+    final String userId = authRepository.getCurrentUser().uid;
+
+    try {
+      var userEventSnapshot = await userEventCollection
+          .where('userId', isEqualTo: userId)
+          .where('sportEventId', isEqualTo: sportEvent.id)
+          .get();
+
+      if (userEventSnapshot.docs.isEmpty) {
+        Toast toast = Toast(
+            ToastificationType.error,
+            "Not Joined",
+            "You are not a participant in this event.",
+            Icons.info_outline,
+            MyColors.support.warning);
+        toast.showToast();
+        return null;
+      }
+
+      var docSnapshot = await sportEventCollection
+          .where('id', isEqualTo: sportEvent.id)
+          .get();
+
+      if (docSnapshot.docs.isNotEmpty) {
+        Map<String, dynamic> data = docSnapshot.docs.first.data();
+        int missingPlayers = data['missingPlayers'] ?? 0;
+        int totalPlayersAsOfNow = data['totalPlayersAsOfNow'] ?? 0;
+
+        if (totalPlayersAsOfNow > 0) {
+          missingPlayers++;
+          totalPlayersAsOfNow--;
+
+          String docId = docSnapshot.docs.single.id;
+
+          await sportEventCollection.doc(docId).update({
+            'missingPlayers': missingPlayers,
+            'totalPlayersAsOfNow': totalPlayersAsOfNow
+          });
+
+          String userEventDocId = userEventSnapshot.docs.single.id;
+          await userEventCollection.doc(userEventDocId).delete();
+
+          var updatedDocSnapshot = await sportEventCollection.doc(docId).get();
+          if (updatedDocSnapshot.exists) {
+            SportEvent updatedEvent =
+            SportEvent.fromSnapshot(updatedDocSnapshot);
+
+            Toast toast = Toast(
+                ToastificationType.success,
+                "Event Left",
+                "You have successfully left the event.",
+                Icons.check,
+                MyColors.support.success);
+            toast.showToast();
+
+            return updatedEvent;
+          }
+        } else {
+          Toast toast = Toast(
+              ToastificationType.error,
+              "Error",
+              "Player count is inconsistent.",
+              Icons.error_outline,
+              MyColors.support.error);
+          toast.showToast();
+        }
+      } else {
+        Toast toast = Toast(
+            ToastificationType.error,
+            "Event not found",
+            "The specified event does not exist.",
+            Icons.error_outline,
+            MyColors.support.error);
+        toast.showToast();
+      }
+    } catch (e) {
+      Toast toast = Toast(ToastificationType.error, "An error occurred",
+          e.toString(), Icons.dangerous_outlined, MyColors.support.error);
+      toast.showToast();
+    }
+    return null;
+  }
+
+
+
   Future<List<SportEvent>?> fetchMyUpcomingSportEvents() async {
     final sportCollection = firebaseFirestore.collection("sport");
     final userSportEventCollection = firebaseFirestore.collection("user_event");
@@ -376,5 +464,6 @@ class SportRepository {
 
     return querySnapshot.docs.isNotEmpty;
   }
+
 
 }

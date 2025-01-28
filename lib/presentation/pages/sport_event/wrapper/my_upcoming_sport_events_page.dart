@@ -48,6 +48,9 @@ class _MyUpcomingSportEventsPageState extends State<MyUpcomingSportEventsPage> {
       if (sportEventsFetched != null && sportEventsFetched.isNotEmpty) {
         sportEvents = sportEventsFetched;
       }
+      else {
+        sportEvents = [];
+      }
     });
   }
 }

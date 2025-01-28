@@ -77,4 +77,8 @@ class SportService {
   Future<bool> checkWishlistStatus(String sportEventId) async{
     return await sportRepository.checkWishlistStatus(sportEventId);
   }
+
+  Future<SportEvent?> cancelEvent(SportEvent sportEvent, BuildContext context) async{
+    return await sportRepository.cancelEvent(sportEvent, context);
+  }
 }
