@@ -1,16 +1,26 @@
-# team_up
+# 🏆 Team Up  
 
-A new Flutter project.
+**Team Up** is a Flutter application that helps players find teammates for various sports events. Whether you're organizing a **football**, **basketball**, **volleyball**, **badminton**, or **handball** match and need extra players, or you're looking to join an existing event, **Team Up** connects you with other players in your area.  
 
-## Getting Started
+## ✨ Features  
 
-This project is a starting point for a Flutter application.
+- ✅ **Create Event** – Organize a sports event and specify the number of players needed, as well as the date and location
+- ✅ **Join Events** – Browse and join sports events that interest you.  
+- ✅ **Filter Events** – Search for events based on sport type and availability.  
+- ✅ **Cancel Events** – Event organizers can cancel their events if necessary.  
+- ✅ **Google Maps Integration** –  
+  - View events on a map for easy location tracking.  
+  - Select a location when creating an event.  
+- ✅ **Notifications** – Get notified when a player joins your event.  
+- ✅ **Upcoming Events** – View all upcoming sports events.  
+- ✅ **Wishlist** – Save events you're interested in.  
+- ✅ **Multi-Sport Support** – Find players for football, basketball, volleyball, badminton, handball, and more!  
+- ✅ **Firebase Integration** – Secure authentication and real-time database management.  
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Getting Started  
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 📌 Prerequisites  
+- 📌 [Flutter SDK](https://flutter.dev/docs/get-started/install) installed  
+- 📌 [Dart](https://dart.dev/get-dart) installed  
+- 📌 Firebase account for authentication and database setup  
+- 📌 Google Maps API Key for location selection and event tracking  
