@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
             '/upcoming_events': (context) => const MyUpcomingSportEventsPage(),
             '/my_wishlist': (context) => const MyWishlistPage(),
             '/sport_create': (context) => const SportForm(),
-            '/map_picker': (context) => MapPicker(),
+            '/map_picker': (context) => const MapPicker(),
             '/sport_detail': (context) => const SportDetailPage(),
           },
         ),

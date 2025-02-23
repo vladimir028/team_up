@@ -113,60 +113,9 @@ class _MapPickerState extends State<MapPicker> {
                     TextPosition(offset: _searchController.text.length),
                   );
                 },
-                // itemBuilder: (context, index, Prediction prediction) {
-                //   return Container(
-                //     padding: const EdgeInsets.all(10),
-                //     child: Row(
-                //       children: [
-                //         const Icon(Icons.location_on),
-                //         const SizedBox(width: 7),
-                //         Expanded(
-                //           child: Text(prediction.description ?? ""),
-                //         ),
-                //       ],
-                //     ),
-                //   );
-                // },
-                // seperatedBuilder: const Divider(),
-                // isCrossBtnShown: true,
-                // containerHorizontalPadding: 10,
-                // placeType: PlaceType.geocode,
               ),
             ),
           ),
-          // if (_selectedLocation != null)
-          //   Positioned(
-          //     bottom: 100,
-          //     left: 20,
-          //     right: 20,
-          //     child: Container(
-          //       padding: const EdgeInsets.all(16),
-          //       decoration: BoxDecoration(
-          //         color: Colors.white,
-          //         borderRadius: BorderRadius.circular(8),
-          //         boxShadow: const [
-          //           BoxShadow(
-          //             color: Colors.black26,
-          //             blurRadius: 5,
-          //             offset: Offset(0, 2),
-          //           ),
-          //         ],
-          //       ),
-          //       child: Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           const Text(
-          //             'Selected Location:',
-          //             style: TextStyle(fontWeight: FontWeight.bold),
-          //           ),
-          //           Text(_selectedLocation!.name),
-          //           Text(
-          //             'Coordinates: ${_selectedLocation!.latitude.toStringAsFixed(6)}, ${_selectedLocation!.longitude.toStringAsFixed(6)}',
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
           Positioned(
             bottom: 30,
             left: 30,

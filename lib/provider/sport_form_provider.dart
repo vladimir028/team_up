@@ -24,9 +24,6 @@ class SportFormProvider extends ChangeNotifier {
   final TextEditingController missingPlayersController =
       TextEditingController();
 
-  // final TextEditingController latController = TextEditingController();
-  // final TextEditingController lngController = TextEditingController();
-
   String? pricePerHour;
   String? totalPlayers;
   String? missingPlayers;
@@ -204,6 +201,7 @@ class SportFormProvider extends ChangeNotifier {
     scheduledTimeStart = null;
     scheduledTimeEnd = null;
     selectedDate = null;
+    locationData = null;
 
   }
 
