@@ -16,6 +16,7 @@ import 'package:team_up/presentation/pages/sport_event/wrapper/my_upcoming_sport
 import 'package:team_up/presentation/pages/sport_event/wrapper/my_wishlist_page.dart';
 import 'package:team_up/presentation/widgets/map_picker.dart';
 import 'package:team_up/provider/sport_form_provider.dart';
+import 'package:team_up/service/local_notification_service.dart';
 import 'package:team_up/service/notification_service.dart';
 import 'package:toastification/toastification.dart';
 
@@ -23,6 +24,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // await LocalNotificationService().initNotifications();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService.instance.initialize();
@@ -51,6 +53,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    LocalNotificationService().initNotifications(context);
     return ChangeNotifierProvider(
       create: (context) => SportFormProvider(),
       child: ToastificationWrapper(
