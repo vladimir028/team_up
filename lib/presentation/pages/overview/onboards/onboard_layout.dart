@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:team_up/styles/my_colors.dart';
-
 import '../../../../styles/my_font_sizes.dart';
 
 class HomePageLayout extends StatefulWidget {
@@ -23,45 +22,58 @@ class HomePageLayout extends StatefulWidget {
 }
 
 class _HomePageLayoutState extends State<HomePageLayout> {
-  List<Image> imageList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 0; i < 6; i++) {
-      imageList.add(
-        Image.asset('lib/data/images/image${widget.indexToStart + i}.jpg'),
-      );
-    }
-  }
+  List<ImageProvider> imageProviders = [];
+  bool imagesLoaded = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    for (var image in imageList) {
-      precacheImage(image.image, context);
+    _preloadImages();
+  }
+
+  Future<void> _preloadImages() async {
+    // Avoid reloading if already loaded
+    if (imagesLoaded) return;
+
+    List<ImageProvider> loadedImages = [];
+
+    for (int i = 0; i < 6; i++) {
+      String imagePath = 'lib/data/images/image${widget.indexToStart + i}.jpg';
+      AssetImage assetImage = AssetImage(imagePath);
+
+      // Preload image before adding it
+      await precacheImage(assetImage, context);
+
+      loadedImages.add(assetImage);
+    }
+
+    if (mounted) {
+      setState(() {
+        imageProviders = loadedImages;
+        imagesLoaded = true;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: imagesLoaded
+          ? SingleChildScrollView(
         child: Column(
           children: [
             MasonryGridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: imageList.length,
-              gridDelegate:
-              const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+              itemCount: imageProviders.length,
+              gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
               ),
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: imageList[index],
+                  child: Image(image: imageProviders[index]),
                 ),
               ),
             ),
@@ -111,6 +123,9 @@ class _HomePageLayoutState extends State<HomePageLayout> {
             ),
           ],
         ),
+      )
+          : const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

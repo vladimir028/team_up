@@ -86,7 +86,24 @@ class _LoginPageState extends State<LoginPage> {
                 descriptionRoute: "/register",
                 onTap: _signIn,
               ),
-              const SizedBox(height: 20), // Additional spacing for end padding
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _signInWithGoogle,
+                child:FittedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/data/images/google-logo.png',
+                      width: 15,
+                      height: 15,
+                    ),
+                    const SizedBox(width: 10),
+                    Text('Sign in with Google'),
+                  ],
+                ),
+                ),
+              ),
             ],
           ),
         ),
@@ -94,6 +111,21 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _signInWithGoogle() async {
+    User? user = await authService.signInWithGoogle();
+
+    if (user != null && mounted) {
+      Toast toast = Toast(
+        ToastificationType.success,
+        "User logged in successfully!",
+        "Welcome!",
+        Icons.check,
+        MyColors.support.success,
+      );
+      toast.showToast();
+      Navigator.pushNamed(context, "/home");
+    }
+  }
   void _signIn() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text;
