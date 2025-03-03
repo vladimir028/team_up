@@ -10,7 +10,6 @@ import 'package:team_up/presentation/pages/sport_event/create_sport_event_page.d
 import 'package:team_up/presentation/pages/overview/account/account_navigation.dart';
 import 'package:team_up/presentation/pages/overview/onboards/onboard_navigation.dart';
 import 'package:team_up/presentation/pages/sport_event/home_page.dart';
-
 import 'package:team_up/presentation/pages/sport_event/sport_detail.dart';
 import 'package:team_up/presentation/pages/sport_event/wrapper/my_upcoming_sport_events_page.dart';
 import 'package:team_up/presentation/pages/sport_event/wrapper/my_wishlist_page.dart';

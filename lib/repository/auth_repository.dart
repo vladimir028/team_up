@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:team_up/models/custom_user.dart';
 import 'package:team_up/data/account/sport_selection/sport.dart';
 import 'package:team_up/presentation/pages/auth/login_page.dart';
@@ -16,6 +17,7 @@ import '../styles/my_colors.dart';
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<User?> signUpWithEmailAndPassword(
       String email, String password) async {
@@ -167,4 +169,53 @@ class AuthRepository {
 
     return tmp;
   }
+
+
+  Future<User?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication? googleAuth = await googleUser.authentication;
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
+        );
+        final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        return userCredential.user;
+      }
+    } on FirebaseAuthException catch (e) {
+      Toast toast;
+      if (e.code == 'account-exists-with-different-credential') {
+        toast = Toast(
+            ToastificationType.warning,
+            "Account exists with different credential",
+            "Please try another account",
+            Icons.warning_amber_outlined,
+            MyColors.support.warning);
+      } else if (e.code == 'invalid-credential') {
+        toast = Toast(
+            ToastificationType.error,
+            "Invalid credential",
+            "An error occurred",
+            Icons.dangerous_outlined,
+            MyColors.support.error);
+      } else {
+        toast = Toast(
+            ToastificationType.error,
+            "Invalid input",
+            "An error occurred",
+            Icons.dangerous_outlined,
+            MyColors.support.error);
+      }
+      toast.showToast();
+    }
+    return null;
+  }
+
+  Future<void> signOutGoogle() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+  }
+
+
 }

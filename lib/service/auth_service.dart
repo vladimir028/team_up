@@ -32,4 +32,13 @@ class AuthService {
   Future<void> logoff(BuildContext context) {
     return _authRepository.logoff(context);
   }
+
+  Future<User?> signInWithGoogle() async {
+    return await _authRepository.signInWithGoogle();
+  }
+
+  Future<void> signOutGoogle() async {
+    await _authRepository.signOutGoogle();
+  }
+
 }
