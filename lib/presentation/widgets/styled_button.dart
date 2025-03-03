@@ -20,7 +20,7 @@ class StyledButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.all(16.0),
           side: const BorderSide(
             color: MyColors.dark,
             width: 2.0,

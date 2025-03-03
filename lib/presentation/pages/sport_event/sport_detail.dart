@@ -140,10 +140,11 @@ class _SportDetailPageState extends State<SportDetailPage> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          sportEvent.locationAddress,
+                          sportEvent.locationAddress.isNotEmpty ? sportEvent.locationAddress :
+                          "${sportEvent.location.longitude.toStringAsFixed(4)}, ${sportEvent.location.latitude.toStringAsFixed(4)}",
                           style: const TextStyle(
                               fontSize: MyFontSizes.titleBase,
-                              color: MyColors.gray),
+                              color: MyColors.dark),
                         ),
                       ),
                     ],
