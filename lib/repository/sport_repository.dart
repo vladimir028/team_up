@@ -10,6 +10,7 @@ import 'package:toastification/toastification.dart';
 import '../global/toast.dart';
 import '../models/enum/court_type.dart';
 import '../models/sport_event.dart';
+import '../service/local_notification_service.dart';
 import '../styles/my_colors.dart';
 
 class SportRepository {
@@ -50,6 +51,8 @@ class SportRepository {
         selectedDate: selectedDate ?? DateTime.now(),
         courtType: selectedCourtType,
       );
+
+      sendNotificationToInterestedUsers(createdSport);
 
       await collection.doc(id).set(createdSport.toJson());
 
@@ -194,6 +197,7 @@ class SportRepository {
                 MyColors.support.success);
             toast.showToast();
 
+            notifyEventCreator(sportEvent, true);
             return updatedEvent;
           }
         } else {
@@ -279,6 +283,9 @@ class SportRepository {
                 Icons.check,
                 MyColors.support.success);
             toast.showToast();
+
+            notifyEventCreator(sportEvent, false);
+            sendNotificationToWishListUsers(updatedEvent);
 
             return updatedEvent;
           }
@@ -463,6 +470,90 @@ class SportRepository {
         .get();
 
     return querySnapshot.docs.isNotEmpty;
+  }
+
+  Future<void> sendNotificationToWishListUsers(SportEvent sportEvent) async{
+    try {
+      QuerySnapshot wishlistSnapshot = await firebaseFirestore
+          .collection('wishlist')
+          .where('sportEventId', isEqualTo: sportEvent.id)
+          .get();
+
+      for (var doc in wishlistSnapshot.docs) {
+        String userId = doc['userId'];
+
+        await LocalNotificationService().showNotifications(
+          title: "A player has left the event",
+          body: "Play ${sportEvent.sportName} at ${sportEvent.locationAddress} on ${sportEvent.selectedDate}",
+          eventId: sportEvent.id,
+        );
+      }
+    } catch (e) {
+      Toast toast = Toast(
+        ToastificationType.error,
+        "An error occurred",
+        e.toString(),
+        Icons.dangerous_outlined,
+        MyColors.support.error,
+      );
+      toast.showToast();
+    }
+  }
+
+  Future<void> sendNotificationToInterestedUsers(SportEvent createdSport) async{
+    try {
+      QuerySnapshot userSnapshot = await firebaseFirestore.collection('customUser').get();
+
+      for (var doc in userSnapshot.docs) {
+        Map<String, dynamic> favoriteSports = doc['favoriteSportWithLevel'];
+
+        String sportName = createdSport.sportName;
+        if (favoriteSports.containsKey(sportName)) {
+          await LocalNotificationService().showNotifications(
+            title: "New Event for $sportName!",
+            body: "A new $sportName event has been created. Check it out!",
+            eventId: createdSport.id,
+          );
+        }
+      }
+    } catch (e) {
+      Toast toast = Toast(
+        ToastificationType.error,
+        "An error occurred",
+        e.toString(),
+        Icons.dangerous_outlined,
+        MyColors.support.error,
+      );
+      toast.showToast();
+    }
+  }
+
+  Future<void> notifyEventCreator(SportEvent sportEvent, bool isJoining) async{
+
+    try {
+      DocumentSnapshot eventSnapshot =
+      await firebaseFirestore.collection('sport').doc(sportEvent.id).get();
+
+      if (eventSnapshot.exists) {
+        String creatorId = eventSnapshot['userId'];
+        String action = isJoining ? "joined" : "left";
+
+        await LocalNotificationService().showNotifications(
+          title: "A participant has $action your event",
+          body: "A user has $action your event. Check the details!",
+          eventId: sportEvent.id,
+        );
+      }
+    } catch (e) {
+      Toast toast = Toast(
+        ToastificationType.error,
+        "Error sending notification to event creator:",
+        e.toString(),
+        Icons.dangerous_outlined,
+        MyColors.support.error,
+      );
+      toast.showToast();
+    }
   }
 
 
