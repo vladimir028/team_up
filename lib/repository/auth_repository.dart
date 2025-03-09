@@ -104,15 +104,28 @@ class AuthRepository {
   }
 
   Future<void> logoff(BuildContext context) async {
-    await _auth.signOut();
-    Toast toast = Toast(
-        ToastificationType.success,
-        "User logged out successfully",
-        "Welcome to Login Screen",
-        Icons.check,
-        MyColors.support.success);
-    toast.showToast();
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()),(route) => false);
+    try {
+      await _googleSignIn.signOut();
+      Toast toast = Toast(
+          ToastificationType.success,
+          "User logged out successfully",
+          "Welcome to Login Screen",
+          Icons.check,
+          MyColors.support.success);
+      toast.showToast();
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()),(route) => false);
+    }
+    catch(e) {
+      await _auth.signOut();
+      Toast toast = Toast(
+          ToastificationType.success,
+          "User logged out successfully",
+          "Welcome to Login Screen",
+          Icons.check,
+          MyColors.support.success);
+      toast.showToast();
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()),(route) => false);
+    }
 
   }
 
@@ -171,7 +184,7 @@ class AuthRepository {
   }
 
 
-  Future<User?> signInWithGoogle() async {
+  Future<User?>  signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser != null) {
@@ -181,6 +194,7 @@ class AuthRepository {
           idToken: googleAuth?.idToken,
         );
         final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        var a = userCredential.user;
         return userCredential.user;
       }
     } on FirebaseAuthException catch (e) {
@@ -214,6 +228,15 @@ class AuthRepository {
 
   Future<void> signOutGoogle() async {
     await _googleSignIn.signOut();
+    // Toast toast = Toast(
+    //     ToastificationType.success,
+    //     "User logged out successfully",
+    //     "Welcome to Login Screen",
+    //     Icons.check,
+    //     MyColors.support.success);
+    // toast.showToast();
+    // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()),(route) => false);
+
     await _auth.signOut();
   }
 
