@@ -27,6 +27,28 @@ class SportForm extends StatefulWidget {
 
 class _SportFormState extends State<SportForm> {
   final _key = GlobalKey<FormState>();
+  final List<String> basketballPositions = [
+    "Point Guard",
+    "Shooting Guard",
+    "Small Forward",
+    "Power Forward",
+    "Center"
+  ];
+
+  final List<String> footballPositions = [
+    "Defender",
+    "Goalkeeper",
+    "Midfielder",
+    "Striker"
+  ];
+
+  final List<String> volleyballPositions = [
+    "Libero",
+    "Outside Hitter",
+    "Setter",
+    "Opposite Hitter",
+    "Middle Blocker"
+  ];
 
   @override
   void initState() {
@@ -73,6 +95,51 @@ class _SportFormState extends State<SportForm> {
                     ),
                   ],
                 ),
+                if (provider.selectedSport.name == "Basketball") ...[
+                  const SizedBox(height: 16),
+                  Center(
+                    child: MyDropdownButton<String>(
+                      value: provider.selectedPositionBasketball ?? "Point Guard",
+                      items: basketballPositions,
+                      onChanged: (String? newValue) {
+                        provider.updateSelectedPositionBasketball(newValue!);
+                      },
+                      itemLabel: (position) => position,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                if (provider.selectedSport.name == "Football") ...[
+                  const SizedBox(height: 16),
+                  Center(
+                    child: MyDropdownButton<String>(
+                      value: provider.selectedPositionSoccer ?? footballPositions.first,
+                      items: footballPositions,
+                      onChanged: (String? newValue) {
+                        provider.updateSelectedPositionFootball(newValue!);
+                      },
+                      itemLabel: (position) => position,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                if (provider.selectedSport.name == "Volleyball") ...[
+                  const SizedBox(height: 16),
+                  Center(
+                    child: MyDropdownButton<String>(
+                      value: provider.selectedPositionVolleyball ?? volleyballPositions.first,
+                      items: volleyballPositions,
+                      onChanged: (String? newValue) {
+                        provider.updateSelectedPositionVolleyball(newValue!);
+                      },
+                      itemLabel: (position) => position,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
                 const SizedBox(height: 16),
                 FormField<DateTime>(
                   builder: (FormFieldState<DateTime> state) {

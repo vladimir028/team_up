@@ -24,6 +24,10 @@ class SportFormProvider extends ChangeNotifier {
   final TextEditingController missingPlayersController =
       TextEditingController();
 
+  String? selectedPositionBasketball;
+  String? selectedPositionVolleyball;
+  String? selectedPositionSoccer;
+
   String? pricePerHour;
   String? totalPlayers;
   String? missingPlayers;
@@ -207,6 +211,21 @@ class SportFormProvider extends ChangeNotifier {
 
   void updateSelectedLocation(LocationData location) {
     locationData = location;
+    notifyListeners();
+  }
+
+  void updateSelectedPositionBasketball(String? position) {
+    selectedPositionBasketball = position;
+    notifyListeners();
+  }
+
+  void updateSelectedPositionFootball(String? position) {
+    selectedPositionSoccer = position;
+    notifyListeners();
+  }
+
+  void updateSelectedPositionVolleyball(String? position) {
+    selectedPositionVolleyball = position;
     notifyListeners();
   }
 }
