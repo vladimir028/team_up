@@ -175,9 +175,8 @@ class AuthRepository {
 
   Map<String, int> getSportMap(List<Sport> favSports) {
     Map<String, int> tmp = HashMap();
-    int a = 5;
     for (var sport in favSports) {
-      tmp.putIfAbsent(sport.name, () => a);
+      tmp.putIfAbsent(sport.name, () => sport.rating);
     }
 
     return tmp;

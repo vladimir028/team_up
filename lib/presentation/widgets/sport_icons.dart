@@ -27,9 +27,14 @@ class _SportIconsState extends State<SportIcons> {
     });
   }
 
+  void _updateSportRating(Sport sport, int rating) {
+    setState(() {
+      sport.rating = rating;
+    });
+  }
+
   @override
   void initState() {
-
     super.initState();
     _selectedSports = UserStore.favoriteSports ?? [];
   }
@@ -43,18 +48,18 @@ class _SportIconsState extends State<SportIcons> {
         crossAxisSpacing: 30,
         pattern: [
           const WovenGridTile(2.5),
-          const WovenGridTile(
-            2.5,
-          ),
+          const WovenGridTile(2.5),
         ],
       ),
       childrenDelegate: SliverChildBuilderDelegate(
-        (context, index) {
+            (context, index) {
           Sport sport = SportSelection.sports[index];
           return SportTile(
+            shouldSeeRatings: true,
             sport: sport,
             isSelected: _selectedSports.contains(sport),
             onToggle: () => _toggleSportSelection(sport),
+            onRatingChanged: (rating) => _updateSportRating(sport, rating),
           );
         },
         childCount: SportSelection.sports.length,

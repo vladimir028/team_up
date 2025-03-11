@@ -31,15 +31,25 @@ class _FilterSportListState extends State<FilterSportList> {
         return Padding(
           padding: const EdgeInsets.all(12.0),
           child: SportTile(
+            shouldSeeRatings: false,
             sport: sport,
             isSelected: widget.selectedSports.contains(sport),
             onToggle: () => selectSport(sport),
+            onRatingChanged: (rating) => updateSportRating(sport, rating),
           ),
         );
       },
     );
   }
 
+
+  void updateSportRating(Sport sport, int rating) {
+    setState(() {
+      sport.rating = rating;
+      // You might want to add additional logic here
+      // to persist the rating or trigger other updates
+    });
+  }
 
   void selectSport(Sport sport) {
     setState(() {
