@@ -5,6 +5,7 @@ import 'package:team_up/data/account/sport_selection/sport_selection.dart';
 import 'package:team_up/models/custom_user.dart';
 import 'package:team_up/models/user_events.dart';
 import 'package:team_up/repository/auth_repository.dart';
+import 'package:team_up/service/notification_service.dart';
 import 'package:toastification/toastification.dart';
 
 import '../global/toast.dart';
@@ -52,9 +53,11 @@ class SportRepository {
         courtType: selectedCourtType,
       );
 
-      sendNotificationToInterestedUsers(createdSport);
+      // sendNotificationToInterestedUsers(createdSport);
 
       await collection.doc(id).set(createdSport.toJson());
+
+      await NotificationService.instance.subscribeToTopic('event_$id');
 
       return createdSport;
     } catch (e) {
@@ -197,7 +200,10 @@ class SportRepository {
                 MyColors.support.success);
             toast.showToast();
 
-            notifyEventCreator(sportEvent, true);
+            // notifyEventCreator(sportEvent, true);
+
+            await NotificationService.instance.subscribeToTopic('event_$docId');
+
             return updatedEvent;
           }
         } else {
@@ -284,8 +290,10 @@ class SportRepository {
                 MyColors.support.success);
             toast.showToast();
 
-            notifyEventCreator(sportEvent, false);
+            // notifyEventCreator(sportEvent, false);
             sendNotificationToWishListUsers(updatedEvent);
+
+            await NotificationService.instance.unsubscribeFromTopic('event_$docId');
 
             return updatedEvent;
           }

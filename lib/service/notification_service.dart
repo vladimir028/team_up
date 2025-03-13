@@ -142,4 +142,9 @@ class NotificationService {
     print("Subscribed to $topic topic");
   }
 
+  Future<void> unsubscribeFromTopic(String topic) async {
+    await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+    print("Unubscribed from $topic topic");
+  }
+
 }
