@@ -7,6 +7,7 @@ import 'package:team_up/global/image.dart';
 import 'package:team_up/global/user_registration_details.dart';
 import 'package:team_up/models/custom_user.dart';
 import 'package:team_up/service/auth_service.dart';
+import 'package:team_up/service/notification_service.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../data/account/account_overview.dart';
@@ -131,6 +132,11 @@ class _AccountNavigationState extends State<AccountNavigation> {
       favSports,
       selectedImage,
     );
+    
+    //Subscribe to topics here
+    for(Sport s in favSports){
+      await NotificationService.instance.subscribeToTopic(s.name);
+    }
 
     if (customUser != null && mounted) {
       showMessage();
